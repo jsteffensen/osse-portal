@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <!-- Materialize CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+      background-color: #f5f7fa;
+    }
+    .main-content {
+      flex: 1 0 auto;
+      padding: 0 0 0 300px;
+    }
+    .sidenav {
+      background-color: #3f4d67;
+    }
+    .sidenav li>a {
+      color: rgba(255,255,255,0.7);
+    }
+    .sidenav li>a:hover, .sidenav li>a.active {
+      background-color: #383a56;
+    }
+    .sidenav li>a.active {
+      color: #7e57c2;
+      border-left: 3px solid #7e57c2;
+    }
+    .sidenav .user-view {
+      padding: 16px 16px 0;
+    }
+    .sidenav .user-view .name {
+      margin-top: 8px;
+      font-weight: 500;
+      color: white;
+    }
+    .sidenav .user-view .email {
+      color: rgba(255,255,255,0.6);
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: white;
+      padding: 0 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .content-area {
+      padding: 20px;
+    }
+	.card {
+      border-radius: 6px;
+    }
+    .card .card-content {
+      padding: 18px;
+    }
+    .card-stats {
+      min-height: 120px;
+      border-radius: 6px;
+    }
+    .card-stats .card-stats-number {
+      font-size: 2.2rem;
+      font-weight: 500;
+      margin: 10px 0;
+    }
+    .card-stats .card-stats-title {
+      font-size: 1.1rem;
+      color: rgba(0,0,0,0.6);
+      font-weight: 400;
+    }
+    .card-stats .card-icon {
+      position: absolute;
+      right: 20px;
+      top: 30px;
+      font-size: 4rem;
+      opacity: 0.2;
+    }
+	.card .card-content-no-pad {
+		padding: 0;
+	}
+    .section-title {
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: #2c2e3e;
+    }
+    .nav-wrapper {
+      background-color: transparent !important;
+      padding: 0 20px;
+      box-shadow: none;
+    }
+    nav {
+	  background-color: transparent !important;
+      height: 64px;
+      line-height: 64px;
+      box-shadow: none;
+    }
+    nav .brand-logo {
+      color: #2c2e3e;
+      font-size: 1.5rem;
+    }
+    nav a {
+      color: #2c2e3e;
+    }
+	
+	nav ul a {
+		color: #3f4d67 !important;
+	}
+	
+    #search-input {
+      border-radius: 30px;
+      padding-left: 15px;
+      width: 300px;
+      border: 1px solid #e0e0e0;
+      height: 40px;
+      margin-top: 12px;
+      background-color: #f5f7fa;
+    }
+    #search-input:focus {
+      background-color: white;
+    }
+    .collection {
+      border: none;
+    }
+    .collection-item {
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: none !important;
+      background-color: white !important;
+      box-shadow: 0 2px 5px 0 rgba(0,0,0,0.05);
+    }
+    .table-container {
+      background-color: transparent !important;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px 0 rgba(0,0,0,0.05);
+      padding: 15px;
+    }
+    .action-btn {
+      padding: 0 10px;
+      margin-right: 5px;
+      border-radius: 4px;
+    }
+    .table-action-toolbar {
+      margin-bottom: 15px;
+    }
+    .btn {
+      border-radius: 4px;
+    }
+    .progress {
+      height: 8px;
+      margin: 5px 0;
+      background-color: #eceff1;
+      border-radius: 4px;
+    }
+    .active-user {
+      height: 12px;
+      width: 12px;
+      background-color: #7e57c2;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .purple-stats {
+      border-left: 4px solid #7e57c2;
+    }
+    .blue-stats {
+      border-left: 4px solid #42a5f5;
+    }
+    .green-stats {
+      border-left: 4px solid #66bb6a;
+    }
+    .orange-stats {
+      border-left: 4px solid #ffa726;
+    }
+    .status-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .status-completed {
+      background-color: #e8f5e9;
+      color: #43a047;
+    }
+    .status-pending {
+      background-color: #fff8e1;
+      color: #ffb300;
+    }
+    .status-cancelled {
+      background-color: #ffebee;
+      color: #e53935;
+    }
+    .status-processing {
+      background-color: #e3f2fd;
+      color: #1e88e5;
+    }
+    table.highlight>tbody>tr:hover {
+      background-color: #f5f7fa;
+    }
+    table.highlight>tbody>tr {
+      transition: background-color 0.25s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidenav -->
+  <ul id="slide-out" class="sidenav sidenav-fixed">
+    <li class="user-view">
+      <div class="background">
+        <img src="/api/placeholder/250/80" alt="background">
+      </div>
+      <a href="#"><img class="circle" src="/api/placeholder/50/50" alt="user"></a>
+      <span class="name">John Doe</span>
+      <span class="email">john@example.com</span>
+    </li>
+    <li>
+      <a href="#" class="waves-effect active"><i class="material-icons">dashboard</i>Dashboard</a>
+    </li>
+    <li>
+      <a href="#" class="waves-effect"><i class="material-icons">people</i>Users</a>
+    </li>
+    <li>
+      <a href="#" class="waves-effect"><i class="material-icons">shopping_cart</i>Products</a>
+    </li>
+    <li>
+      <a href="#" class="waves-effect"><i class="material-icons">insert_chart</i>Analytics</a>
+    </li>
+    <li>
+      <a href="#" class="waves-effect"><i class="material-icons">settings</i>Settings</a>
+    </li>
+    <li><div class="divider"></div></li>
+    <li>
+      <a href="#" class="waves-effect"><i class="material-icons">exit_to_app</i>Logout</a>
+    </li>
+  </ul>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Top Navigation -->
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" data-target="slide-out" class="sidenav-trigger hide-on-large-only"><i class="material-icons">menu</i></a>
+        <a href="#" class="brand-logo hide-on-large-only">Admin</a>
+        <ul class="left">
+          <li><input id="search-input" type="text" placeholder="Search..."></li>
+          <li><a href="#"><i class="material-icons">notifications</i></a></li>
+          <li><a href="#"><i class="material-icons">email</i></a></li>
+          <li><a href="#"><i class="material-icons">account_circle</i></a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="content-area">
+      <div class="row">
+        <div class="col s12">
+          <h5 class="section-title">Dashboard</h5>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="row">
+        <div class="col s12 m6 l3">
+          <div class="card card-stats purple-stats">
+            <div class="card-content">
+              <span class="card-stats-title">Total Users</span>
+              <h4 class="card-stats-number">1,250</h4>
+              <p>+15% from last week</p>
+              <i class="material-icons card-icon purple-text text-lighten-1">people</i>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card card-stats blue-stats">
+            <div class="card-content">
+              <span class="card-stats-title">Revenue</span>
+              <h4 class="card-stats-number">$8,350</h4>
+              <p>+5% from last month</p>
+              <i class="material-icons card-icon blue-text text-lighten-1">attach_money</i>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card card-stats green-stats">
+            <div class="card-content">
+              <span class="card-stats-title">Orders</span>
+              <h4 class="card-stats-number">284</h4>
+              <p>-2% from yesterday</p>
+              <i class="material-icons card-icon green-text text-lighten-1">shopping_cart</i>
+            </div>
+          </div>
+        </div>
+        <div class="col s12 m6 l3">
+          <div class="card card-stats orange-stats">
+            <div class="card-content">
+              <span class="card-stats-title">Visitors</span>
+              <h4 class="card-stats-number">5,652</h4>
+              <p>+22% from last week</p>
+              <i class="material-icons card-icon orange-text text-lighten-1">visibility</i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Orders and User Activity -->
+      <div class="row">
+        <!-- Recent Orders -->
+        <div class="col s12 l8">
+          <h5 class="section-title">Recent Orders</h5>
+		  
+		  <div class="card">
+            <div class="card-content card-content-no-pad">
+		  
+			  <div class="table-container">
+				<div class="table-action-toolbar">
+				  <button class="btn waves-effect waves-light purple darken-1">New Order</button>
+				  <button class="btn waves-effect waves-light grey lighten-3 black-text">Export</button>
+				</div>
+				<table class="responsive-table highlight">
+				  <thead>
+					<tr>
+					  <th>Order ID</th>
+					  <th>Customer</th>
+					  <th>Status</th>
+					  <th>Amount</th>
+					  <th>Actions</th>
+					</tr>
+				  </thead>
+				  <tbody>
+					<tr>
+					  <td>#ORD-001</td>
+					  <td>John Smith</td>
+					  <td><span class="status-badge status-completed">Completed</span></td>
+					  <td>$152.00</td>
+					  <td>
+						<a class="btn-small action-btn purple lighten-1"><i class="material-icons">visibility</i></a>
+						<a class="btn-small action-btn amber darken-2"><i class="material-icons">edit</i></a>
+						<a class="btn-small action-btn red darken-1"><i class="material-icons">delete</i></a>
+					  </td>
+					</tr>
+					<tr>
+					  <td>#ORD-002</td>
+					  <td>Emma Johnson</td>
+					  <td><span class="status-badge status-pending">Pending</span></td>
+					  <td>$85.25</td>
+					  <td>
+						<a class="btn-small action-btn purple lighten-1"><i class="material-icons">visibility</i></a>
+						<a class="btn-small action-btn amber darken-2"><i class="material-icons">edit</i></a>
+						<a class="btn-small action-btn red darken-1"><i class="material-icons">delete</i></a>
+					  </td>
+					</tr>
+					<tr>
+					  <td>#ORD-003</td>
+					  <td>Michael Brown</td>
+					  <td><span class="status-badge status-cancelled">Cancelled</span></td>
+					  <td>$240.50</td>
+					  <td>
+						<a class="btn-small action-btn purple lighten-1"><i class="material-icons">visibility</i></a>
+						<a class="btn-small action-btn amber darken-2"><i class="material-icons">edit</i></a>
+						<a class="btn-small action-btn red darken-1"><i class="material-icons">delete</i></a>
+					  </td>
+					</tr>
+					<tr>
+					  <td>#ORD-004</td>
+					  <td>Anna Williams</td>
+					  <td><span class="status-badge status-processing">Processing</span></td>
+					  <td>$122.75</td>
+					  <td>
+						<a class="btn-small action-btn purple lighten-1"><i class="material-icons">visibility</i></a>
+						<a class="btn-small action-btn amber darken-2"><i class="material-icons">edit</i></a>
+						<a class="btn-small action-btn red darken-1"><i class="material-icons">delete</i></a>
+					  </td>
+					</tr>
+					<tr>
+					  <td>#ORD-005</td>
+					  <td>Robert Davis</td>
+					  <td><span class="status-badge status-completed">Completed</span></td>
+					  <td>$95.00</td>
+					  <td>
+						<a class="btn-small action-btn purple lighten-1"><i class="material-icons">visibility</i></a>
+						<a class="btn-small action-btn amber darken-2"><i class="material-icons">edit</i></a>
+						<a class="btn-small action-btn red darken-1"><i class="material-icons">delete</i></a>
+					  </td>
+					</tr>
+				  </tbody>
+				</table>
+			  </div>
+			</div>
+		  </div>
+        </div>
+
+        <!-- User Activity -->
+        <div class="col s12 l4">
+          <h5 class="section-title">Active Users</h5>
+          <div class="card">
+            <div class="card-content">
+              <ul class="collection">
+                <li class="collection-item avatar">
+                  <img src="/api/placeholder/42/42" alt="user" class="circle">
+                  <span class="title"><span class="active-user"></span> John Smith</span>
+                  <p>Online • Admin<br>
+                     Last active: 2 mins ago
+                  </p>
+                </li>
+                <li class="collection-item avatar">
+                  <img src="/api/placeholder/42/42" alt="user" class="circle">
+                  <span class="title"><span class="active-user"></span> Emma Johnson</span>
+                  <p>Online • Customer<br>
+                     Last active: Just now
+                  </p>
+                </li>
+                <li class="collection-item avatar">
+                  <img src="/api/placeholder/42/42" alt="user" class="circle">
+                  <span class="title">David Wilson</span>
+                  <p>Offline • Support<br>
+                     Last active: 35 mins ago
+                  </p>
+                </li>
+                <li class="collection-item avatar">
+                  <img src="/api/placeholder/42/42" alt="user" class="circle">
+                  <span class="title">Sarah Brown</span>
+                  <p>Offline • Customer<br>
+                     Last active: 2 hours ago
+                  </p>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Project Progress -->
+          <h5 class="section-title">Project Progress</h5>
+          <div class="card">
+            <div class="card-content">
+              <p>Website Redesign</p>
+              <div class="progress">
+                <div class="determinate purple" style="width: 85%"></div>
+              </div>
+              <p>Mobile App Development</p>
+              <div class="progress">
+                <div class="determinate green" style="width: 65%"></div>
+              </div>
+              <p>Marketing Campaign</p>
+              <div class="progress">
+                <div class="determinate amber" style="width: 40%"></div>
+              </div>
+              <p>Database Migration</p>
+              <div class="progress">
+                <div class="determinate red" style="width: 20%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('.sidenav').sidenav();
+    });
+  </script>
+</body>
+</html>
