@@ -9,13 +9,35 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  
+  <style>
+    /* Top Progress Bar styling */
+    #top-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 9999;
+      margin: 0;
+      display: none;
+    }
+    #top-progress-bar .indeterminate {
+      background-color: #2196F3; /* Blue color */
+    }
+  </style>
 </head>
 <body>
+  <!-- Top Progress Bar -->
+  <div id="top-progress-bar" class="progress">
+    <div class="indeterminate"></div>
+  </div>
   <nav class="transparent" role="navigation">
     <div class="nav-wrapper container">
 	  
       <ul class="left">
         <li><a href="#">Navbar Link</a></li>
+        <li><a class="modal-trigger" href="#modal1">Open<i class="material-icons right">open_in_new</i></a></li>
+        <li><a href="#!" onclick="showAlert()">Alert<i class="material-icons right">notifications</i></a></li>
       </ul>
 
     </div>
@@ -33,9 +55,11 @@
 		</div>
 	  </li>
 		
-      <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-	  <li><a class="subheader">Subheader</a></li>
-      <li><a href="#!">Second Sidebar Link</a></li>
+      <li><a href="#!" class="template-link" data-template="dashboard-template.html"><i class="material-icons">dashboard</i>Dashboard</a></li>
+	  <li><a href="#!" class="template-link" data-template="components-template.html"><i class="material-icons">view_module</i>Components</a></li>
+	  <li><a class="subheader">Navigation</a></li>
+      <li><a href="#!" class="template-link" data-template="dashboard-template.html">Load Dashboard</a></li>
+      <li><a href="#!" class="template-link" data-template="components-template.html">Load Components</a></li>
       <li class="no-padding">
         <ul class="collapsible collapsible-accordion">
           <li>
@@ -60,92 +84,13 @@
     </ul>
     <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
 
-  <div class="container">
-    <div class="section">
-
-      <!--   Card Section   -->
-      <div class="row">
-	  
-        <div class="col s12 m4">
-			<div class="card horizontal">
-			  <div class="card-stacked">
-				<div class="card-content">
-				  <p>I am a very simple card. I am good at containing small bits of information.</p>
-				</div>
-				<div class="card-action">
-				  <a href="#">This is a link</a>
-				</div>
-			  </div>
-			</div>
-        </div>
-
-        <div class="col s12 m4">
-			<div class="card horizontal">
-			  <div class="card-stacked">
-				<div class="card-content">
-				  <p>I am a very simple card. I am good at containing small bits of information.</p>
-				</div>
-				<div class="card-action">
-				  <a href="#">This is a link</a>
-				</div>
-			  </div>
-			</div>
-        </div>
-
-        <div class="col s12 m4">
-			<div class="card horizontal">
-			  <div class="card-stacked">
-				<div class="card-content">
-				  <p>I am a very simple card. I am good at containing small bits of information.</p>
-				</div>
-				<div class="card-action">
-				  <a href="#">This is a link</a>
-				</div>
-			  </div>
-			</div>
-        </div>
-		
-      </div>
-
+  <div class="container" id="content-container">
+    <!-- Empty container that will be filled dynamically -->
+    <div class="center" style="margin-top: 50px;">
+      <p>Select an option from the sidebar to load content</p>
     </div>
-    <br><br>
   </div>
 
-  <footer class="page-footer orange">
-    <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-copyright">
-      <div class="container">
-      Made by <a class="orange-text text-lighten-3" href="http://materializecss.com">Materialize</a>
-      </div>
-    </div>
-  </footer>
 
 
   <!--  Scripts-->

@@ -9,6 +9,14 @@ body {
 	background-color: #f3f7fa;
 }
 
+/* Make container wider */
+.container {
+  width: calc(100% - 320px);
+  max-width: none;
+  margin-left: 310px;
+  padding-right: 10px;
+}
+
 .icon-block {
   padding: 0 15px;
 }
