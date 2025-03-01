@@ -204,3 +204,24 @@ function showAlert() {
   
   console.log('Alert button clicked at ' + new Date().toLocaleTimeString());
 }
+
+// Mock function for the Send Test Email button
+function sendTestEmail() {
+  // Show progress bar
+  showProgress();
+  
+  // Simulate API call delay
+  setTimeout(function() {
+    // Hide progress bar
+    hideProgress();
+    
+    // Display success toast
+    M.toast({
+      html: 'Test email sent successfully!',
+      classes: 'rounded green'
+    });
+    
+    // Log the action with timestamp
+    console.log('Test email sent at ' + new Date().toLocaleTimeString());
+  }, 1500); // Simulate a 1.5 second delay for the API call
+}
