@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Starter Template - Materialize</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="../SiteAssets/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="../SiteAssets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  
+  <style>
+    /* Top Progress Bar styling */
+    #top-progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 9999;
+      margin: 0;
+      display: none;
+    }
+    #top-progress-bar .indeterminate {
+      background-color: #2196F3; /* Blue color */
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Progress Bar -->
+  <div id="top-progress-bar" class="progress">
+    <div class="indeterminate"></div>
+  </div>
+  <nav class="transparent" role="navigation">
+    <div class="nav-wrapper container">
+	  
+      <ul class="left">
+        <li><a href="#">Navbar Link</a></li>
+        <li><a class="modal-trigger" href="#modal1">Open<i class="material-icons right">open_in_new</i></a></li>
+        <li><a href="#!" onclick="showAlert()">Alert<i class="material-icons right">notifications</i></a></li>
+        <li><a href="#!" onclick="sendTestEmail()">Send Test Email<i class="material-icons right">email</i></a></li>
+      </ul>
+
+    </div>
+  </nav>
+
+
+	<ul id="slide-out" class="sidenav sidenav-fixed z-depth-2">
+	
+	  <li><div class="user-view">
+		<div class="background">
+			<img src="../SiteAssets/awacs.jpg">
+		  </div>
+		  <a href="#name"><span class="white-text name">John Doe</span></a>
+		  <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+		</div>
+	  </li>
+		
+      <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/dashboard-template.html"><i class="material-icons">dashboard</i>Dashboard</a></li>
+	  <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/components-template.html"><i class="material-icons">view_module</i>Components</a></li>
+	  <li><a class="subheader">Navigation</a></li>
+      <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/dashboard-template.html">Load Dashboard</a></li>
+      <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/components-template.html">Load Components</a></li>
+      <li class="no-padding">
+        <ul class="collapsible collapsible-accordion">
+          <li>
+            <a class="collapsible-header">Dropdown<i class="material-icons">arrow_drop_down</i></a>
+            <div class="collapsible-body">
+              <ul>
+                <li><a href="#!">First</a></li>
+                <li><a href="#!">Second</a></li>
+                <li><a href="#!">Third</a></li>
+                <li><a href="#!">Fourth</a></li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </li>
+	  <!-- <li><div class="divider"></div></li> -->
+	  <li><a href="#!">Sidebar Link</a></li>
+	  <li><a href="#!">Sidebar Link</a></li>
+	  <li><a class="subheader">Subheader</a></li>
+	  <li><a href="#!">Sidebar Link</a></li>
+	  <li><a href="#!">Sidebar Link</a></li>
+    </ul>
+    <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
+
+  <div class="container" id="content-container">
+    <!-- Empty container that will be filled dynamically -->
+    <div class="center" style="margin-top: 50px;">
+      <p>Select an option from the sidebar to load content</p>
+    </div>
+  </div>
+
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="../SiteAssets/js/materialize.js"></script>
+  <script src="../SiteAssets/js/lib/bluebird.min.js"></script>
+  <script src="../SiteAssets/js/data-service.js"></script>
+  <script src="../SiteAssets/js/cache-service.js"></script>
+  <script src="../SiteAssets/js/init.js"></script>
+  
+  <script>
+    // Initialize services when document is ready
+    $(function() {
+      // Show loading indicator
+      showProgress();
+      
+      // For local testing with the fallback data, enable this
+      // Always enable fallback for ease of local development
+      config.useFallbackData = true;
+      
+      // Initialize the cache service (which initializes data service)
+      cache.init()
+        .then(function() {
+          console.log('Cache and data services initialized successfully');
+          
+          // Log cache statistics after preloading
+          console.log('Cache stats:', cache.getStats());
+          
+          // Show sample data access examples in console
+          console.log('CACHE USAGE EXAMPLES:');
+          console.log('---------------------');
+          console.log('1. Access OSSE Parent List directly:');
+          console.log('   cache.osseParentList');
+          
+          console.log('2. Access OSSE Requirements List directly:');
+          console.log('   cache.osseRequirementList');
+          
+          console.log('3. Find OSSE parent items with high priority:');
+          console.log('   cache.find("osseParentList", item => item.Priority === "High")');
+          
+          console.log('4. Find requirements for a specific parent:');
+          console.log('   // Assuming the first parent item ID is used');
+          console.log('   const parentId = cache.osseParentList[0]?.Id;');
+          console.log('   cache.find("osseRequirementList", item => item.ParentId === parentId)');
+          
+          console.log('5. Access requirements directly through parent items:');
+          console.log('   // Each parent has the Requirements array automatically populated');
+          console.log('   cache.osseParentList[0]?.Requirements');
+          
+          console.log('6. Get current user:');
+          console.log('   cache.currentUser');
+          
+          console.log('7. Get all site users:');
+          console.log('   cache.siteUsers');
+          
+          console.log('8. Look up a user by ID:');
+          console.log('   cache.getUserById(15)'); // Jane Williams
+          
+          console.log('9. Get request digest for POST operations:');
+          console.log('   data.ensureDigest().then(digest => console.log("Digest obtained"))');
+          
+          // Hide loading indicator
+          hideProgress();
+          
+          // Show success toast
+          M.toast({
+            html: 'Data preloaded successfully!',
+            classes: 'green',
+            displayLength: 3000
+          });
+          
+          // If we're already on a page with the parent collection, update it
+          if ($('#osse-parent-collection').length > 0) {
+            console.log('Found OSSE parent collection on page, populating...');
+            populateOsseParentCollection();
+          }
+        })
+        .catch(function(error) {
+          console.error('Failed to initialize services:', error);
+          
+          // Hide loading indicator
+          hideProgress();
+          
+          // Show error toast
+          M.toast({
+            html: 'Error initializing: ' + (error.message || 'Unknown error'),
+            classes: 'red',
+            displayLength: 5000
+          });
+        });
+    });
+  </script>
+
+  </body>
+</html>

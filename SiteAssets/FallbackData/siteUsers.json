@@ -1,0 +1,22 @@
+{
+  "value": [
+    {
+      "odata.type": "SP.User",
+      "odata.id": "https://collab.contoso.com/aircm/osse/_api/Web/GetUserById(72)",
+      "odata.editLink": "Web/GetUserById(72)",
+      "Id": 72,
+      "IsHiddenInUI": false,
+      "LoginName": "i:0e.t|contoso idp|steffensen@contoso.com",
+      "Title": "STEFFENSEN Jesper",
+      "PrincipalType": 1,
+      "Email": "steffensen@contoso.com",
+      "IsEmailAuthenticationGuestUser": false,
+      "IsShareByEmailGuestUser": false,
+      "IsSiteAdmin": false,
+      "UserId": {
+        "NameId": "steffensen@contoso.com",
+        "NameIdIssuer": "TrustedProvider:contoso idp"
+      }
+    }
+  ]
+}

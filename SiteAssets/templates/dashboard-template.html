@@ -1,0 +1,119 @@
+<!-- Modal Structure -->
+<div id="modal1" class="modal">
+  <div class="modal-content">
+    <h4>Modal Header</h4>
+    <p>A bunch of text</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+  </div>
+</div>
+
+<div class="section">
+  <!--   Card Section - First Row   -->
+  <div class="row">
+    <div class="col s12 m3">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am a very simple card. I am good at containing small bits of information.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">This is a link</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col s12 m3">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am a very simple card. I am good at containing small bits of information.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">This is a link</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col s12 m3">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am a very simple card. I am good at containing small bits of information.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">This is a link</a>
+            </div>
+          </div>
+        </div>
+    </div>
+    
+    <div class="col s12 m3">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am a very simple card. I am good at containing small bits of information.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">This is a link</a>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  
+  <!--   Card Section - Second Row   -->
+  <div class="row">
+    <div class="col s12 m6">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <h5>OSSE Parent Items</h5>
+              <ul class="collection" id="osse-parent-collection">
+                <!-- Collection items will be populated dynamically by JavaScript -->
+                <li class="collection-item avatar loading-indicator">
+                  <i class="material-icons circle blue pulse">hourglass_full</i>
+                  <span class="title">Loading OSSE Parent Items...</span>
+                  <p>Please wait while we load the data<br>
+                     This should only take a moment
+                  </p>
+                </li>
+              </ul>
+              
+              <script>
+                // Try to populate immediately if cache is already loaded
+                $(function() {
+                  if (window.cache && window.cache.osseParentList) {
+                    console.log('Dashboard template loaded with cache already available. Populating collection...');
+                    window.populateOsseParentCollection();
+                  } else {
+                    console.log('Dashboard template loaded but cache not yet available. Collection will be populated when cache is ready.');
+                  }
+                });
+              </script>
+            </div>
+            <div class="card-action">
+              <a href="#">View All Users</a>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col s12 m6">
+        <div class="card horizontal">
+          <div class="card-stacked">
+            <div class="card-content">
+              <p>I am a very simple card with more content. I am good at containing small bits of information and can be used for various purposes in the dashboard.</p>
+            </div>
+            <div class="card-action">
+              <a href="#">This is a link</a>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<br><br>

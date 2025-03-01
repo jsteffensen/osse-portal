@@ -1,0 +1,32 @@
+{
+  "apiEndpoint": "https://collab.contoso.com/aircm/osse/_api/",
+  "apiListEndpoint": "https://collab.contoso.com/aircm/osse/_api/Web/Lists/",
+  "apiUserEndpoint": "https://collab.contoso.com/aircm/osse/_api/Web/Siteusers/",
+  "lists": {
+    "osseParentList": {
+      "name": "OsseParentList",
+      "expand": "Author",
+      "orderBy": "Priority asc,DueDate asc",
+      "fallbackFile": "../SiteAssets/FallbackData/osseParentList.json"
+    },
+    "osseRequirementList": {
+      "name": "OsseRequirementList",
+      "expand": "Author",
+      "orderBy": "ParentId asc,Priority asc",
+      "fallbackFile": "../SiteAssets/FallbackData/osseRequirementList.json"
+    }
+  },
+  "users": {
+    "currentUser": {
+      "endpoint": "web/currentuser",
+      "fallbackFile": "../SiteAssets/FallbackData/currentUser.json"
+    },
+    "siteUsers": {
+      "endpoint": "web/siteusers",
+      "fallbackFile": "../SiteAssets/FallbackData/siteUsers.json"
+    }
+  },
+  "defaultPageSize": 100,
+  "cacheTimeoutMinutes": 10,
+  "useFallbackData": false
+}
