@@ -1,0 +1,48 @@
+<div class="section">
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-title-container" style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="card-title">OSSE Parents</span>
+            <a href="#!" class="back-to-list waves-effect waves-light btn-small">
+              <i class="material-icons left">arrow_back</i>Back to Dashboard
+            </a>
+          </div>
+          
+          <!-- Stepper placeholder -->
+          <div class="stepper-placeholder"></div>
+          
+          <ul class="collection" id="osse-parent-list">
+            <!-- Parent items will be populated dynamically by JavaScript -->
+            <li class="collection-item avatar loading-indicator">
+              <i class="material-icons circle blue pulse">hourglass_full</i>
+              <span class="title">Loading OSSE Parents...</span>
+              <p>Please wait while we load the data<br>
+                 This should only take a moment
+              </p>
+            </li>
+          </ul>
+          
+          <script>
+            $(function() {
+              if (window.cache && window.cache.osseParentList) {
+                console.log('Parent template loaded with cache already available. Populating list...');
+                window.populateParentList();
+              } else {
+                console.log('Parent template loaded but cache not yet available. List will be populated when cache is ready.');
+              }
+              
+              // Add back button click handler directly in the template
+              $('.back-to-list').on('click', function(e) {
+                e.preventDefault();
+                console.log('Back to Dashboard button clicked');
+                window.appRouter.navigateTo('dashboard');
+              });
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
