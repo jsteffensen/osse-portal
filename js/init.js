@@ -108,6 +108,9 @@
       // Find the route by template path
       router.navigateByPath(templatePath);
     });
+    
+    // Load dashboard by default when page loads
+    router.navigateTo('dashboard');
   });
   
   // Export router to global scope for direct access
