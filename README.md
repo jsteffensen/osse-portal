@@ -1,6 +1,8 @@
 # OSSE Portal
 
-A modern administrative dashboard portal built with MaterializeCSS.
+A modern administrative dashboard portal built with MaterializeCSS. This project provides a ready-to-use admin template and dashboard using the Materialize CSS framework.
+
+**Keywords**: materializecss admin, materialize admin template, materialize dashboard, material design admin, responsive admin template
 
 ![OSSE Portal Screenshot](screen.png)
 
