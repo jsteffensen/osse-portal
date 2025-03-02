@@ -73,13 +73,30 @@ cache.preloadEssentialData = function() {
     promises.push(cache.loadSiteUsers());
     keys.push('siteUsers');
     
+    // Load all templates
+    if (window.appRouter && window.appRouter.routes) {
+      console.log('Preloading templates...');
+      window.appRouter.routes.forEach(function(route) {
+        if (route.path) {
+          console.log('Preloading template:', route.path);
+          promises.push(cache.loadTemplate(route.path));
+          keys.push('template:' + route.path);
+        }
+      });
+    }
+    
     // Return a promise that resolves when all data is loaded
     return Promise.all(promises).then(function(results) {
       // Assign results directly to cache object properties for easy access
       results.forEach(function(result, index) {
         var key = keys[index];
-        cache[key] = result;
-        console.log('Assigned preloaded data to cache.' + key + ' (' + (result ? (Array.isArray(result) ? result.length : 1) : 0) + ' items)');
+        if (key.startsWith('template:')) {
+          // Don't assign templates directly to cache properties, just keep in _store
+          console.log('Cached template: ' + key);
+        } else {
+          cache[key] = result;
+          console.log('Assigned preloaded data to cache.' + key + ' (' + (result ? (Array.isArray(result) ? result.length : 1) : 0) + ' items)');
+        }
       });
       
       // Process relationships between lists if needed
@@ -695,6 +712,82 @@ cache.findById = function(listKey, itemId) {
   return cache[listKey].find(function(item) {
     return item.Id === itemId;
   }) || null;
+};
+
+/**
+ * Load a template into cache
+ * @param {string} templatePath - Path to the template file
+ * @returns {Promise} Promise that resolves with the template HTML
+ */
+cache.loadTemplate = function(templatePath) {
+  var cacheKey = 'template:' + templatePath;
+  
+  // Check if we already have this template in cache
+  if (cache._store[cacheKey]) {
+    cache._stats.hits++;
+    return Promise.resolve(cache._store[cacheKey]);
+  }
+  
+  // Check if we're already loading this template
+  if (cache._loading[cacheKey]) {
+    return cache._promises[cacheKey];
+  }
+  
+  // Mark as loading
+  cache._loading[cacheKey] = true;
+  cache._stats.misses++;
+  cache._stats.loads++;
+  
+  // Start the loading process
+  var promise = new Promise(function(resolve, reject) {
+    $.ajax({
+      url: templatePath,
+      dataType: 'html',
+      cache: false,
+      success: function(html) {
+        // Store in cache
+        cache._store[cacheKey] = html;
+        
+        // Clear loading state
+        delete cache._loading[cacheKey];
+        delete cache._promises[cacheKey];
+        
+        console.log('Loaded and cached template:', templatePath);
+        resolve(html);
+      },
+      error: function(xhr, status, error) {
+        // Clear loading state on error
+        delete cache._loading[cacheKey];
+        delete cache._promises[cacheKey];
+        
+        console.error('Error loading template ' + templatePath + ':', error);
+        reject(error);
+      }
+    });
+  });
+  
+  // Store the promise
+  cache._promises[cacheKey] = promise;
+  
+  return promise;
+};
+
+/**
+ * Get a cached template or load it if not available
+ * @param {string} templatePath - Path to the template file
+ * @returns {Promise} Promise that resolves with the template HTML
+ */
+cache.getTemplate = function(templatePath) {
+  var cacheKey = 'template:' + templatePath;
+  
+  // If template is cached, return it immediately
+  if (cache._store[cacheKey]) {
+    cache._stats.hits++;
+    return Promise.resolve(cache._store[cacheKey]);
+  }
+  
+  // Otherwise load and cache it
+  return cache.loadTemplate(templatePath);
 };
 
 // The cache namespace is already exported to the global scope at the top of the file

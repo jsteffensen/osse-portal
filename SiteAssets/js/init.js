@@ -434,11 +434,20 @@ window.populateParentList = function() {
       // Show loading indicator in the container
       $('#content-container').html('<div class="center" style="margin-top: 50px;"><div class="preloader-wrapper big active"><div class="spinner-layer spinner-blue-only"><div class="circle-clipper left"><div class="circle"></div></div><div class="gap-patch"><div class="circle"></div></div><div class="circle-clipper right"><div class="circle"></div></div></div></div><p>Loading ' + route.name + '...</p></div>');
       
-      // Load the template with AJAX
-      $.ajax({
-        url: route.path,
-        cache: false,
-        success: (html) => {
+      // Use cached template if available, otherwise load it
+      const loadPromise = window.cache && typeof window.cache.getTemplate === 'function' 
+        ? window.cache.getTemplate(route.path)
+        : new Promise((resolve, reject) => {
+            $.ajax({
+              url: route.path,
+              cache: false,
+              success: resolve,
+              error: reject
+            });
+          });
+        
+      loadPromise
+        .then((html) => {
           // Set current route
           this.currentRoute = route;
           
@@ -455,14 +464,13 @@ window.populateParentList = function() {
           
           // Hide progress bar
           hideProgress();
-        },
-        error: (xhr, status, error) => {
+        })
+        .catch((error) => {
           // Show error message and hide progress bar
           hideProgress();
           $('#content-container').html('<div class="center" style="margin-top: 50px;"><p class="red-text">Error loading content:<br>' + error + '</p></div>');
           console.error('Error loading template:', error);
-        }
-      });
+        });
     },
     
     // Navigate back to the previous route
