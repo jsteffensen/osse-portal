@@ -138,6 +138,8 @@ All data is stored in the global `window.cache` object, with direct properties (
 
 ## Development
 
+For detailed development guidance, see the [INSTRUCTIONS.md](INSTRUCTIONS.md) file. These instructions are designed as initial guidelines for AI assisted development agents working on this project.
+
 ### Adding New Routes
 
 Add new routes by extending the router configuration in `SiteAssets/js/init.js`:
