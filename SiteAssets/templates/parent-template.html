@@ -24,15 +24,151 @@
             </li>
           </ul>
           
-          <!-- Tabs for related data -->
+          <!-- Collapsible for related data -->
           <div id="related-data-container" style="display: none; margin-top: 30px;">
             <div class="row">
               <div class="col s12">
-                <ul class="tabs tabs-fixed-width custom-tabs">
-                  <li class="tab col s3"><a class="active" href="#requirements-tab">Requirements</a></li>
-                  <li class="tab col s3"><a href="#additional-tab">Additional Info</a></li>
-                  <li class="tab col s3"><a href="#history-tab">History</a></li>
-                  <li class="tab col s3"><a href="#documents-tab">Documents</a></li>
+                <ul class="collapsible">
+                  <li>
+                    <div class="collapsible-header"><i class="material-icons">create</i>1. Create</div>
+                    <div class="collapsible-body" style="padding: 0;">
+                      <ul class="tabs tabs-fixed-width custom-tabs">
+                        <li class="tab col s3"><a class="active" href="#requirements-tab">Requirements</a></li>
+                        <li class="tab col s3"><a href="#additional-tab">Additional Info</a></li>
+                        <li class="tab col s3"><a href="#history-tab">History</a></li>
+                        <li class="tab col s3"><a href="#documents-tab">Documents</a></li>
+                      </ul>
+                      
+                      <!-- Requirements Tab -->
+                      <div id="requirements-tab" class="col s12">
+                        <!-- Tab navbar -->
+                        <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                          <div class="nav-wrapper">
+                            <ul class="left">
+                              <li>
+                                <a href="#!" id="edit-requirements-btn" class="btn-flat waves-effect waves-light">
+                                  <i class="material-icons left" style="color: #3f4d67;">edit</i><span style="color: #3f4d67;">Edit</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </nav>
+                        
+                        <div id="requirement-form-container">
+                          <!-- Form content (visible only when requirement exists) -->
+                          <div id="requirement-form-content" style="display: none;">
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <textarea id="programme-team-comments" class="materialize-textarea" disabled></textarea>
+                                <label for="programme-team-comments" class="active">Programme Team Comments</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <textarea id="data-required" class="materialize-textarea" disabled></textarea>
+                                <label for="data-required" class="active">Data Required</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="input-field col s12">
+                                <textarea id="focal-point-comments" class="materialize-textarea" disabled></textarea>
+                                <label for="focal-point-comments" class="active">Focal Point Comments</label>
+                              </div>
+                            </div>
+                            
+                            <!-- Save/Cancel buttons (hidden by default) -->
+                            <div class="row" id="requirement-form-actions" style="display: none;">
+                              <div class="col s12">
+                                <button class="btn-flat waves-effect waves-light" id="save-requirements-btn">
+                                  <i class="material-icons left" style="color: #3f4d67;">save</i><span style="color: #3f4d67;">Save</span>
+                                </button>
+                                <button class="btn-flat waves-effect waves-light" id="cancel-requirements-btn">
+                                  <i class="material-icons left" style="color: #3f4d67;">cancel</i><span style="color: #3f4d67;">Cancel</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <!-- No requirement message (shown when no requirement exists) -->
+                          <div class="row" id="no-requirement-container">
+                            <div class="col s12 center-align" style="margin-top: 30px;">
+                              <p class="grey-text" id="no-requirement-message">No requirement data found for this parent.</p>
+                              <button class="btn-flat waves-effect waves-light" id="create-requirement-btn" style="margin-top: 15px;">
+                                <i class="material-icons left" style="color: #3f4d67;">add</i><span style="color: #3f4d67;">Create Requirement</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+              
+                      <!-- Additional Info Tab (placeholder for future implementation) -->
+                      <div id="additional-tab" class="col s12">
+                        <!-- Tab navbar -->
+                        <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                          <div class="nav-wrapper">
+                            <ul class="left">
+                              <li>
+                                <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                                  <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </nav>
+                        <p class="grey-text">Additional information will be displayed here in future updates.</p>
+                      </div>
+                      
+                      <!-- History Tab (placeholder for future implementation) -->
+                      <div id="history-tab" class="col s12">
+                        <!-- Tab navbar -->
+                        <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                          <div class="nav-wrapper">
+                            <ul class="left">
+                              <li>
+                                <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                                  <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </nav>
+                        <p class="grey-text">History and change log will be displayed here in future updates.</p>
+                      </div>
+                      
+                      <!-- Documents Tab (placeholder for future implementation) -->
+                      <div id="documents-tab" class="col s12">
+                        <!-- Tab navbar -->
+                        <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                          <div class="nav-wrapper">
+                            <ul class="left">
+                              <li>
+                                <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                                  <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                        </nav>
+                        <p class="grey-text">Related documents will be displayed here in future updates.</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="collapsible-header"><i class="material-icons">rate_review</i>2. Review</div>
+                    <div class="collapsible-body">
+                      <div class="container" style="width: 100%; padding: 1.5rem;">
+                        <p class="grey-text">The review functionality will be implemented in future updates.</p>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="collapsible-header"><i class="material-icons">thumb_up</i>3. Approve</div>
+                    <div class="collapsible-body">
+                      <div class="container" style="width: 100%; padding: 1.5rem;">
+                        <p class="grey-text">The approval functionality will be implemented in future updates.</p>
+                      </div>
+                    </div>
+                  </li>
                 </ul>
               </div>
               
@@ -99,120 +235,45 @@
                 .btn-flat.disabled:hover span {
                   color: #a9b7d0 !important;
                 }
-              </style>
-              
-              <!-- Requirements Tab -->
-              <div id="requirements-tab" class="col s12">
-                <!-- Tab navbar -->
-                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
-                  <div class="nav-wrapper">
-                    <ul class="left">
-                      <li>
-                        <a href="#!" id="edit-requirements-btn" class="btn-flat waves-effect waves-light">
-                          <i class="material-icons left" style="color: #3f4d67;">edit</i><span style="color: #3f4d67;">Edit</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
                 
-                <div id="requirement-form-container">
-                  <!-- Form content (visible only when requirement exists) -->
-                  <div id="requirement-form-content" style="display: none;">
-                    <div class="row">
-                      <div class="input-field col s12">
-                        <textarea id="programme-team-comments" class="materialize-textarea" disabled></textarea>
-                        <label for="programme-team-comments" class="active">Programme Team Comments</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="input-field col s12">
-                        <textarea id="data-required" class="materialize-textarea" disabled></textarea>
-                        <label for="data-required" class="active">Data Required</label>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="input-field col s12">
-                        <textarea id="focal-point-comments" class="materialize-textarea" disabled></textarea>
-                        <label for="focal-point-comments" class="active">Focal Point Comments</label>
-                      </div>
-                    </div>
-                    
-                    <!-- Save/Cancel buttons (hidden by default) -->
-                    <div class="row" id="requirement-form-actions" style="display: none;">
-                      <div class="col s12">
-                        <button class="btn-flat waves-effect waves-light" id="save-requirements-btn">
-                          <i class="material-icons left" style="color: #3f4d67;">save</i><span style="color: #3f4d67;">Save</span>
-                        </button>
-                        <button class="btn-flat waves-effect waves-light" id="cancel-requirements-btn">
-                          <i class="material-icons left" style="color: #3f4d67;">cancel</i><span style="color: #3f4d67;">Cancel</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- No requirement message (shown when no requirement exists) -->
-                  <div class="row" id="no-requirement-container">
-                    <div class="col s12 center-align" style="margin-top: 30px;">
-                      <p class="grey-text" id="no-requirement-message">No requirement data found for this parent.</p>
-                      <button class="btn-flat waves-effect waves-light" id="create-requirement-btn" style="margin-top: 15px;">
-                        <i class="material-icons left" style="color: #3f4d67;">add</i><span style="color: #3f4d67;">Create Requirement</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Additional Info Tab (placeholder for future implementation) -->
-              <div id="additional-tab" class="col s12">
-                <!-- Tab navbar -->
-                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
-                  <div class="nav-wrapper">
-                    <ul class="left">
-                      <li>
-                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
-                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
-                <p class="grey-text">Additional information will be displayed here in future updates.</p>
-              </div>
-              
-              <!-- History Tab (placeholder for future implementation) -->
-              <div id="history-tab" class="col s12">
-                <!-- Tab navbar -->
-                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
-                  <div class="nav-wrapper">
-                    <ul class="left">
-                      <li>
-                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
-                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
-                <p class="grey-text">History and change log will be displayed here in future updates.</p>
-              </div>
-              
-              <!-- Documents Tab (placeholder for future implementation) -->
-              <div id="documents-tab" class="col s12">
-                <!-- Tab navbar -->
-                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
-                  <div class="nav-wrapper">
-                    <ul class="left">
-                      <li>
-                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
-                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </nav>
-                <p class="grey-text">Related documents will be displayed here in future updates.</p>
-              </div>
+                /* Custom styling for collapsible elements */
+                .collapsible {
+                  border: none;
+                  box-shadow: none;
+                  margin: 0;
+                }
+                
+                .collapsible-header {
+                  background-color: #f3f7fa; 
+                  color: #3f4d67;
+                  font-weight: 500;
+                  border-bottom: 1px solid #ddd;
+                  padding: 1rem;
+                }
+                
+                .collapsible-header i {
+                  color: #3f4d67;
+                  margin-right: 1rem;
+                }
+                
+                .collapsible-header:hover {
+                  background-color: rgba(63, 77, 103, 0.05);
+                }
+                
+                .collapsible-header:hover i,
+                .collapsible-header:hover {
+                  color: #47b2c7;
+                }
+                
+                li.active .collapsible-header {
+                  border-bottom: none;
+                }
+                
+                .collapsible-body {
+                  border-bottom: 1px solid #ddd;
+                  padding: 0;
+                }
+              </style>
             </div>
           </div>
           
@@ -227,8 +288,9 @@
                 const parentId = urlParams.get('id');
                 
                 if (parentId) {
-                  // Initialize tabs
+                  // Initialize tabs and collapsible
                   $('.tabs').tabs();
+                  $('.collapsible').collapsible();
                   
                   // Show related data container
                   $('#related-data-container').show();
