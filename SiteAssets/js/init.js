@@ -72,14 +72,39 @@ window.populateOsseParentCollection = function() {
       // Add click handler to parent items
       $('.parent-item').click(function() {
         const parentId = $(this).data('id');
+        
+        // Store the current route so we can navigate back to it
+        if (window.appRouter.currentRoute) {
+          window.appRouter.routeHistory.push({
+            name: window.appRouter.currentRoute.name,
+            path: window.appRouter.currentRoute.path,
+            params: new URLSearchParams(window.location.search)
+          });
+          
+          // Keep only the last 10 routes
+          if (window.appRouter.routeHistory.length > 10) {
+            window.appRouter.routeHistory.shift();
+          }
+          
+          console.log('Route history updated:', window.appRouter.routeHistory.map(r => r.name));
+        }
+        
         // Navigate to parent view with the ID as a parameter
         const url = new URL(window.location);
         url.searchParams.set('v', 'parent');
         url.searchParams.set('id', parentId);
-        window.history.pushState({}, '', url);
         
-        // Trigger navigation
-        window.appRouter.navigateTo('parent');
+        // Create state object for popstate events
+        const state = {
+          routeName: 'parent',
+          params: url.searchParams.toString()
+        };
+        
+        // Update URL and browser history
+        window.history.pushState(state, '', url);
+        
+        // Trigger navigation (don't add to history again as we've already done it)
+        window.appRouter.navigateTo('parent', true);
       });
     } else {
       // No items found
@@ -290,18 +315,47 @@ window.populateParentList = function() {
     // Current active route
     currentRoute: null,
     
+    // History of last 10 routes visited
+    routeHistory: [],
+    
     // Navigate to a route by name
-    navigateTo: function(routeName) {
+    navigateTo: function(routeName, isBackNavigation = false) {
       const route = this.routes.find(r => r.name === routeName);
       
       if (route) {
         showProgress();
         this.loadTemplate(route);
         
+        // Store current route in history array
+        if (!isBackNavigation && this.currentRoute) {
+          // Add current route to history before navigating away
+          this.routeHistory.push({
+            name: this.currentRoute.name,
+            path: this.currentRoute.path,
+            params: new URLSearchParams(window.location.search)
+          });
+          
+          // Keep only the last 10 routes
+          if (this.routeHistory.length > 10) {
+            this.routeHistory.shift();
+          }
+          
+          console.log('Route history updated:', this.routeHistory.map(r => r.name));
+        }
+        
         // Update URL parameter without page reload
         const url = new URL(window.location);
         url.searchParams.set('v', routeName);
-        window.history.pushState({}, '', url);
+        
+        // Create a state object with route info for popstate events
+        const state = {
+          routeName: routeName,
+          params: url.searchParams.toString()
+        };
+        
+        // Push state to browser history
+        window.history.pushState(state, '', url);
+        
       } else {
         console.error(`Route "${routeName}" not found`);
       }
@@ -310,18 +364,44 @@ window.populateParentList = function() {
     },
     
     // Navigate to a route by template path
-    navigateByPath: function(templatePath) {
+    navigateByPath: function(templatePath, isBackNavigation = false) {
       const route = this.routes.find(r => r.path === templatePath);
       
       if (route) {
-        // Found the route, navigate to it and update URL parameter
+        // Found the route, navigate to it
         showProgress();
         this.loadTemplate(route);
+        
+        // Store current route in history array
+        if (!isBackNavigation && this.currentRoute) {
+          // Add current route to history before navigating away
+          this.routeHistory.push({
+            name: this.currentRoute.name,
+            path: this.currentRoute.path,
+            params: new URLSearchParams(window.location.search)
+          });
+          
+          // Keep only the last 10 routes
+          if (this.routeHistory.length > 10) {
+            this.routeHistory.shift();
+          }
+          
+          console.log('Route history updated:', this.routeHistory.map(r => r.name));
+        }
         
         // Update URL parameter without page reload
         const url = new URL(window.location);
         url.searchParams.set('v', route.name);
-        window.history.pushState({}, '', url);
+        
+        // Create a state object with route info for popstate events
+        const state = {
+          routeName: route.name,
+          params: url.searchParams.toString()
+        };
+        
+        // Push state to browser history
+        window.history.pushState(state, '', url);
+        
       } else {
         // Handle unknown template path - create a temporary route
         const tempRoute = {
@@ -332,7 +412,20 @@ window.populateParentList = function() {
         showProgress();
         this.loadTemplate(tempRoute);
         
-        // For custom routes we don't update the URL parameter
+        // Store current route in history array
+        if (!isBackNavigation && this.currentRoute) {
+          // Add current route to history before navigating away
+          this.routeHistory.push({
+            name: this.currentRoute.name,
+            path: this.currentRoute.path,
+            params: new URLSearchParams(window.location.search)
+          });
+          
+          // Keep only the last 10 routes
+          if (this.routeHistory.length > 10) {
+            this.routeHistory.shift();
+          }
+        }
       }
     },
     
@@ -370,6 +463,36 @@ window.populateParentList = function() {
           console.error('Error loading template:', error);
         }
       });
+    },
+    
+    // Navigate back to the previous route
+    navigateBack: function() {
+      if (this.routeHistory.length > 0) {
+        // Get the last route from history
+        const prevRoute = this.routeHistory.pop();
+        console.log('Navigating back to:', prevRoute.name);
+        
+        // Restore URL parameters
+        let url = new URL(window.location);
+        url.search = prevRoute.params.toString();
+        window.history.pushState({}, '', url);
+        
+        // Find the actual route object from routes array
+        const route = this.routes.find(r => r.name === prevRoute.name);
+        if (route) {
+          // Navigate to previous route with isBackNavigation flag set to true
+          showProgress();
+          this.loadTemplate(route);
+        } else {
+          console.error(`Previous route "${prevRoute.name}" not found`);
+          return false;
+        }
+        
+        return true;
+      } else {
+        console.log('No previous routes in history');
+        return false;
+      }
     }
   };
   
@@ -393,6 +516,42 @@ window.populateParentList = function() {
       
       // Find the route by template path
       router.navigateByPath(templatePath);
+    });
+    
+    // Set up browser back button handling
+    window.addEventListener('popstate', function(event) {
+      console.log('Browser back button pressed', event.state);
+      
+      // First try to use the state object if available
+      if (event.state && event.state.routeName) {
+        const route = router.routes.find(r => r.name === event.state.routeName);
+        if (route) {
+          console.log(`Navigating to ${event.state.routeName} from popstate event`);
+          showProgress();
+          router.loadTemplate(route);
+          return;
+        }
+      }
+      
+      // Fallback to URL parameters if state is not available
+      const urlParams = new URLSearchParams(window.location.search);
+      const viewParam = urlParams.get('v');
+      
+      if (viewParam && viewParam.trim() !== '') {
+        // Find the route
+        const route = router.routes.find(r => r.name === viewParam);
+        if (route) {
+          console.log(`Navigating to ${viewParam} from popstate event (URL fallback)`);
+          showProgress();
+          router.loadTemplate(route);
+        } else {
+          console.error(`Route "${viewParam}" not found in popstate handler`);
+          router.navigateTo('dashboard', true); // true = don't add to history
+        }
+      } else {
+        // Default to dashboard if no view param
+        router.navigateTo('dashboard', true); // true = don't add to history
+      }
     });
     
     // Wait for cache service to initialize before loading the initial route
@@ -424,13 +583,48 @@ window.populateParentList = function() {
     
     if (viewParam && viewParam.trim() !== '') {
       // If 'v' parameter exists, try to navigate to that route
-      if (router.navigateTo(viewParam) === undefined) {
+      const route = router.routes.find(r => r.name === viewParam);
+      if (route) {
+        // Create the initial state for this route
+        const url = new URL(window.location);
+        const state = {
+          routeName: viewParam,
+          params: url.searchParams.toString()
+        };
+        
+        // Replace the current history entry with our state
+        window.history.replaceState(state, '', url);
+        
+        // Navigate to the route (don't add to history as this is initial load)
+        router.navigateTo(viewParam, true);
+      } else {
         console.warn(`Route "${viewParam}" not found, defaulting to dashboard`);
-        router.navigateTo('dashboard');
+        // Create the initial state for the dashboard
+        const url = new URL(window.location);
+        url.searchParams.set('v', 'dashboard');
+        const state = {
+          routeName: 'dashboard',
+          params: url.searchParams.toString()
+        };
+        
+        // Replace the current history entry with our state
+        window.history.replaceState(state, '', url);
+        
+        router.navigateTo('dashboard', true);
       }
     } else {
       // Load dashboard by default when no parameter is provided
-      router.navigateTo('dashboard');
+      const url = new URL(window.location);
+      url.searchParams.set('v', 'dashboard');
+      const state = {
+        routeName: 'dashboard',
+        params: url.searchParams.toString()
+      };
+      
+      // Replace the current history entry with our state
+      window.history.replaceState(state, '', url);
+      
+      router.navigateTo('dashboard', true);
     }
   }
   
@@ -446,7 +640,45 @@ window.populateParentList = function() {
     // Initialize all Materialize components with a single call
     M.AutoInit();
     
+    // Add back button to navigation if we have route history
+    updateBackButton();
+    
     console.log('Generic initialization completed');
+  }
+  
+  // Function to update back button visibility
+  function updateBackButton() {
+    // Try to find the back button in the navigation
+    let $backNav = $('.nav-back-btn');
+    
+    // If back button doesn't exist, create it
+    if ($backNav.length === 0) {
+      // Find the navigation container
+      const $navContainer = $('.nav-wrapper');
+      if ($navContainer.length) {
+        // Create back button and prepend to navigation
+        $navContainer.prepend('<a href="#!" class="nav-back-btn left hide"><i class="material-icons">arrow_back</i></a>');
+        $backNav = $('.nav-back-btn');
+      }
+    }
+    
+    // Show/hide back button based on route history
+    if ($backNav.length && window.appRouter) {
+      if (window.appRouter.routeHistory.length > 0) {
+        $backNav.removeClass('hide');
+        
+        // Add click handler if not already added
+        if (!$backNav.data('handler-added')) {
+          $backNav.data('handler-added', true);
+          $backNav.click(function(e) {
+            e.preventDefault();
+            window.appRouter.navigateBack();
+          });
+        }
+      } else {
+        $backNav.addClass('hide');
+      }
+    }
   }
   
   // Dashboard specific initializer

@@ -36,8 +36,12 @@
               // Add back button click handler directly in the template
               $('.back-to-list').on('click', function(e) {
                 e.preventDefault();
-                console.log('Back to Dashboard button clicked');
-                window.appRouter.navigateTo('dashboard');
+                console.log('Back button clicked');
+                
+                // If we have a route in history, use navigateBack, otherwise go to dashboard
+                if (!window.appRouter.navigateBack()) {
+                  window.appRouter.navigateTo('dashboard');
+                }
               });
             });
           </script>

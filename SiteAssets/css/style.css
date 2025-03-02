@@ -178,3 +178,25 @@ nav ul a:hover {
     font-size: 12px;
   }
 }
+
+/* Back button in navigation */
+.nav-back-btn {
+  padding: 0 10px;
+  margin-right: 10px;
+}
+
+.nav-back-btn i.material-icons {
+  height: 56px;
+  line-height: 56px;
+}
+
+.nav-back-btn:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+
+@media (max-width: 600px) {
+  .nav-back-btn i.material-icons {
+    height: 48px;
+    line-height: 48px;
+  }
+}
