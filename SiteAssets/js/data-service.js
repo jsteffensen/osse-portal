@@ -365,6 +365,76 @@ data.createListItem = function(listName, itemData) {
 };
 
 /**
+ * Create a new requirement item associated with a parent
+ * @param {number} parentId - ID of the parent item to associate with
+ * @param {Object} requirementData - Data for the new requirement item
+ * @returns {Promise} Promise that resolves with the created requirement item
+ */
+data.createRequirement = function(parentId, requirementData) {
+  // Ensure we have a valid parent ID
+  if (!parentId) {
+    return Promise.reject(new Error('Parent ID is required to create a requirement'));
+  }
+  
+  // Get the list name from config
+  var listName = null;
+  for (var key in config.lists) {
+    if (key === 'osseRequirementList') {
+      listName = config.lists[key].name;
+      break;
+    }
+  }
+  
+  if (!listName) {
+    return Promise.reject(new Error('Requirement list configuration not found'));
+  }
+  
+  // Build the complete item data including the parent ID
+  var completeData = {
+    ParentId: parentId
+  };
+  
+  // Copy all requirement data to the complete data object
+  for (var prop in requirementData) {
+    if (requirementData.hasOwnProperty(prop)) {
+      completeData[prop] = requirementData[prop];
+    }
+  }
+  
+  // Use the standard createListItem function to create the item
+  return data.createListItem(listName, completeData)
+    .then(function(newItem) {
+      console.log('Created new requirement item:', newItem);
+      
+      // After creation, update cache to create the relationship
+      if (window.cache && window.cache.osseParentList && window.cache.osseRequirementList) {
+        // Find the parent item
+        var parentItem = window.cache.findById('osseParentList', parentId);
+        
+        if (parentItem) {
+          // Initialize Requirements array if it doesn't exist
+          if (!parentItem.Requirements) {
+            parentItem.Requirements = [];
+          }
+          
+          // Add the new requirement to the parent's Requirements array
+          parentItem.Requirements.push(newItem);
+          
+          // Add the parent reference to the requirement
+          newItem.Parent = parentItem;
+          
+          // Also add the new item to the requirements list
+          window.cache.osseRequirementList.push(newItem);
+          
+          console.log('Updated cache with new requirement relationship');
+        }
+      }
+      
+      return newItem;
+    });
+};
+
+/**
  * Update an existing item in a SharePoint list
  * @param {string} listName - Name of the list
  * @param {number} itemId - ID of the item to update
@@ -390,6 +460,84 @@ data.updateListItem = function(listName, itemId, itemData) {
     data.clearCache(endpoint);
     return response;
   });
+};
+
+/**
+ * Update an existing requirement item
+ * @param {number} requirementId - ID of the requirement to update
+ * @param {Object} requirementData - New data for the requirement
+ * @returns {Promise} Promise that resolves when update is complete
+ */
+data.updateRequirement = function(requirementId, requirementData) {
+  // Ensure we have a valid requirement ID
+  if (!requirementId) {
+    return Promise.reject(new Error('Requirement ID is required to update a requirement'));
+  }
+  
+  // Get the list name from config
+  var listName = null;
+  for (var key in config.lists) {
+    if (key === 'osseRequirementList') {
+      listName = config.lists[key].name;
+      break;
+    }
+  }
+  
+  if (!listName) {
+    return Promise.reject(new Error('Requirement list configuration not found'));
+  }
+  
+  // Use the standard updateListItem function to update the item
+  return data.updateListItem(listName, requirementId, requirementData)
+    .then(function(result) {
+      console.log('Updated requirement item:', requirementId);
+      
+      // After update, update the item in cache
+      if (window.cache && window.cache.osseRequirementList) {
+        // Find the requirement item in the cache
+        var requirementIndex = window.cache.osseRequirementList.findIndex(function(item) {
+          return item.Id === requirementId;
+        });
+        
+        if (requirementIndex !== -1) {
+          // Get the existing requirement
+          var existingRequirement = window.cache.osseRequirementList[requirementIndex];
+          
+          // Update the requirement properties
+          for (var prop in requirementData) {
+            if (requirementData.hasOwnProperty(prop)) {
+              existingRequirement[prop] = requirementData[prop];
+            }
+          }
+          
+          console.log('Updated requirement in cache');
+          
+          // If the requirement is linked to a parent, update that relationship too
+          if (existingRequirement.Parent && 
+              existingRequirement.Parent.Requirements && 
+              Array.isArray(existingRequirement.Parent.Requirements)) {
+            
+            // Find the requirement in the parent's Requirements array
+            var parentReqIndex = existingRequirement.Parent.Requirements.findIndex(function(req) {
+              return req.Id === requirementId;
+            });
+            
+            if (parentReqIndex !== -1) {
+              // Update the requirement in the parent's Requirements array
+              for (var parentProp in requirementData) {
+                if (requirementData.hasOwnProperty(parentProp)) {
+                  existingRequirement.Parent.Requirements[parentReqIndex][parentProp] = requirementData[parentProp];
+                }
+              }
+              
+              console.log('Updated requirement in parent relationship cache');
+            }
+          }
+        }
+      }
+      
+      return result;
+    });
 };
 
 /**

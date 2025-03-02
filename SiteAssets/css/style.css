@@ -200,3 +200,63 @@ nav ul a:hover {
     line-height: 48px;
   }
 }
+
+/* Progress bar in parent list item */
+.parent-progress-container {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  width: 85%;
+}
+
+.parent-progress-bar {
+  height: 6px;
+  margin: 4px 0;
+  border-radius: 3px;
+  background-color: #eee;
+  overflow: hidden;
+}
+
+.parent-progress-bar .determinate {
+  height: 6px;
+  margin: 0;
+  background-color: #47b2c7;
+}
+
+.parent-progress-status {
+  font-size: 12px;
+  color: #3f4d67;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
+
+.collection-item.avatar .title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.collection-item.avatar .title {
+  margin-right: 10px;
+  width: 100%;
+}
+
+.collection-item.avatar .secondary-content {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+/* MaterializeCSS preloader styling within collection items */
+.parent-preloader {
+  height: 4px !important;
+  background-color: rgba(63, 77, 103, 0.1) !important;
+  border-radius: 2px;
+  width: 85%;
+}
+
+.parent-preloader .determinate {
+  background-color: #47b2c7 !important;
+}

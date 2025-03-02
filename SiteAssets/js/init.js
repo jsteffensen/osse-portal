@@ -44,23 +44,35 @@ window.populateOsseParentCollection = function() {
     if (window.cache.osseParentList.length > 0) {
       console.log(`Found ${window.cache.osseParentList.length} OSSE Parent items to display`);
       
-      // Generate icon colors for variety
-      const iconColors = ['blue', 'green', 'red', 'orange', 'purple', 'teal'];
-      
       // Add each item from the cache
       window.cache.osseParentList.forEach((item, index) => {
-        // Create a new collection item
+        // Create a new collection item with consistent icon and color
         const iconClass = ['folder', 'assignment', 'insert_chart', 'list_alt', 'build'][index % 5];
-        const colorIndex = index % iconColors.length;
+        
+        // Generate random progress values for demonstration (replace with actual data later)
+        const progressStates = ['Draft', 'In Progress', 'Review', 'Approved', 'Complete'];
+        const progressState = progressStates[index % progressStates.length];
+        const progressPercent = Math.min(100, (index % 5 + 1) * 20); // 20%, 40%, 60%, 80%, 100%
         
         // Create HTML for the new item with data-id attribute for click handler
         const newItemHtml = `
           <li class="collection-item avatar parent-item" data-id="${item.Id}">
-            <i class="material-icons circle ${iconColors[colorIndex]}">${iconClass}</i>
-            <span class="title">${item.Title || 'No Title'}</span>
+            <i class="material-icons circle" style="background-color: #3f4d67;">${iconClass}</i>
+            <div class="title-container">
+              <span class="title">${item.Title || 'No Title'}</span>
+            </div>
             <p>${item.EcrRfv || ''} - ${item.Reference || ''}<br>
                ID: ${item.Id}
             </p>
+            <div class="parent-progress-container">
+              <div class="parent-progress-bar">
+                <div class="determinate" style="width: ${progressPercent}%"></div>
+              </div>
+              <span class="parent-progress-status">Status: ${progressState}</span>
+            </div>
+            <div class="progress parent-preloader" style="margin-top: 10px; margin-bottom: 0;">
+              <div class="determinate" style="width: ${progressPercent}%"></div>
+            </div>
             <a href="#!" class="secondary-content"><i class="material-icons">navigate_next</i></a>
           </li>
         `;
@@ -203,15 +215,13 @@ window.populateParentList = function() {
         // Add stepper before the collection item
         $('.stepper-placeholder').html(window.renderStepper(stepperStep));
         
-        // Generate random icon color for variety
-        const iconColors = ['blue', 'green', 'red', 'orange', 'purple', 'teal'];
+        // Use consistent dark gray-blue color
         const iconClass = 'folder';
-        const colorIndex = Math.floor(Math.random() * iconColors.length);
         
         // Create detailed view for the single parent
         const detailHtml = `
           <li class="collection-item avatar">
-            <i class="material-icons circle ${iconColors[colorIndex]}">${iconClass}</i>
+            <i class="material-icons circle" style="background-color: #3f4d67;">${iconClass}</i>
             <span class="title">${parentItem.Title || 'No Title'}</span>
             <p>
               Reference: ${parentItem.Reference || 'N/A'}<br>
@@ -240,19 +250,15 @@ window.populateParentList = function() {
       if (window.cache.osseParentList.length > 0) {
         console.log(`Found ${window.cache.osseParentList.length} OSSE Parent items to display`);
         
-        // Generate icon colors for variety
-        const iconColors = ['blue', 'green', 'red', 'orange', 'purple', 'teal'];
-        
         // Add each item from the cache
         window.cache.osseParentList.forEach((item, index) => {
-          // Create a new list item
+          // Create a new list item with consistent icon and color
           const iconClass = ['folder', 'assignment', 'insert_chart', 'list_alt', 'build'][index % 5];
-          const colorIndex = index % iconColors.length;
           
           // Create HTML for the new item
           const newItemHtml = `
             <li class="collection-item avatar">
-              <i class="material-icons circle ${iconColors[colorIndex]}">${iconClass}</i>
+              <i class="material-icons circle" style="background-color: #3f4d67;">${iconClass}</i>
               <span class="title">${item.Title || 'No Title'}</span>
               <p>${item.EcrRfv || ''} - ${item.Reference || ''}<br>
                  ID: ${item.Id}
@@ -268,7 +274,7 @@ window.populateParentList = function() {
         // No items found
         $list.append(`
           <li class="collection-item avatar">
-            <i class="material-icons circle grey">info</i>
+            <i class="material-icons circle" style="background-color: #3f4d67;">info</i>
             <span class="title">No Items Found</span>
             <p>There are no OSSE Parent items available<br>Please check your data source</p>
           </li>

@@ -5,8 +5,8 @@
         <div class="card-content">
           <div class="card-title-container" style="display: flex; justify-content: space-between; align-items: center;">
             <span class="card-title">OSSE Parents</span>
-            <a href="#!" class="back-to-list waves-effect waves-light btn-small">
-              <i class="material-icons left">arrow_back</i>Back to Dashboard
+            <a href="#!" class="back-to-list waves-effect waves-light btn-flat">
+              <i class="material-icons left" style="color: #3f4d67;">arrow_back</i><span style="color: #3f4d67;">Back to Dashboard</span>
             </a>
           </div>
           
@@ -24,11 +24,224 @@
             </li>
           </ul>
           
+          <!-- Tabs for related data -->
+          <div id="related-data-container" style="display: none; margin-top: 30px;">
+            <div class="row">
+              <div class="col s12">
+                <ul class="tabs tabs-fixed-width custom-tabs">
+                  <li class="tab col s3"><a class="active" href="#requirements-tab">Requirements</a></li>
+                  <li class="tab col s3"><a href="#additional-tab">Additional Info</a></li>
+                  <li class="tab col s3"><a href="#history-tab">History</a></li>
+                  <li class="tab col s3"><a href="#documents-tab">Documents</a></li>
+                </ul>
+              </div>
+              
+              <style>
+                /* Custom tab styling to match the dark grey-blue theme */
+                .custom-tabs {
+                  background-color: #f3f7fa;
+                  border-bottom: 1px solid #ddd;
+                }
+                
+                /* Override all default tab styles to ensure no red shows through */
+                .custom-tabs .tab a,
+                .tabs .tab a,
+                .tabs .tab a.active,
+                .tabs .tab a:hover {
+                  color: #3f4d67 !important; /* Match nav text color */
+                  font-weight: 500;
+                  background-color: transparent !important;
+                }
+                
+                .custom-tabs .tab a:hover,
+                .tabs .tab a:hover {
+                  color: #47b2c7 !important; /* Match nav hover color */
+                  background-color: rgba(63, 77, 103, 0.05) !important;
+                }
+                
+                .custom-tabs .tab a.active,
+                .tabs .tab a.active {
+                  color: #47b2c7 !important;
+                  background-color: transparent !important;
+                }
+                
+                .custom-tabs .indicator,
+                .tabs .indicator {
+                  background-color: #47b2c7 !important;
+                  height: 3px;
+                }
+                
+                /* Style the form field labels to match the color scheme */
+                #requirements-tab .input-field label {
+                  color: #3f4d67;
+                }
+                
+                #requirements-tab .input-field textarea:disabled {
+                  color: #3f4d67;
+                  border-bottom: 1px solid #ddd;
+                }
+                
+                /* Match button hover effects to top nav */
+                .btn-flat:hover i,
+                .btn-flat:hover span {
+                  color: #47b2c7 !important;
+                  transition: color 0.3s ease;
+                }
+                
+                /* Specific styling for back to dashboard button */
+                .back-to-list:hover i,
+                .back-to-list:hover span {
+                  color: #47b2c7 !important;
+                }
+                
+                /* Disabled buttons shouldn't have hover effects */
+                .btn-flat.disabled:hover i,
+                .btn-flat.disabled:hover span {
+                  color: #a9b7d0 !important;
+                }
+              </style>
+              
+              <!-- Requirements Tab -->
+              <div id="requirements-tab" class="col s12">
+                <!-- Tab navbar -->
+                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                  <div class="nav-wrapper">
+                    <ul class="left">
+                      <li>
+                        <a href="#!" id="edit-requirements-btn" class="btn-flat waves-effect waves-light">
+                          <i class="material-icons left" style="color: #3f4d67;">edit</i><span style="color: #3f4d67;">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+                
+                <div id="requirement-form-container">
+                  <!-- Form content (visible only when requirement exists) -->
+                  <div id="requirement-form-content" style="display: none;">
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <textarea id="programme-team-comments" class="materialize-textarea" disabled></textarea>
+                        <label for="programme-team-comments" class="active">Programme Team Comments</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <textarea id="data-required" class="materialize-textarea" disabled></textarea>
+                        <label for="data-required" class="active">Data Required</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="input-field col s12">
+                        <textarea id="focal-point-comments" class="materialize-textarea" disabled></textarea>
+                        <label for="focal-point-comments" class="active">Focal Point Comments</label>
+                      </div>
+                    </div>
+                    
+                    <!-- Save/Cancel buttons (hidden by default) -->
+                    <div class="row" id="requirement-form-actions" style="display: none;">
+                      <div class="col s12">
+                        <button class="btn-flat waves-effect waves-light" id="save-requirements-btn">
+                          <i class="material-icons left" style="color: #3f4d67;">save</i><span style="color: #3f4d67;">Save</span>
+                        </button>
+                        <button class="btn-flat waves-effect waves-light" id="cancel-requirements-btn">
+                          <i class="material-icons left" style="color: #3f4d67;">cancel</i><span style="color: #3f4d67;">Cancel</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- No requirement message (shown when no requirement exists) -->
+                  <div class="row" id="no-requirement-container">
+                    <div class="col s12 center-align" style="margin-top: 30px;">
+                      <p class="grey-text" id="no-requirement-message">No requirement data found for this parent.</p>
+                      <button class="btn-flat waves-effect waves-light" id="create-requirement-btn" style="margin-top: 15px;">
+                        <i class="material-icons left" style="color: #3f4d67;">add</i><span style="color: #3f4d67;">Create Requirement</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Additional Info Tab (placeholder for future implementation) -->
+              <div id="additional-tab" class="col s12">
+                <!-- Tab navbar -->
+                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                  <div class="nav-wrapper">
+                    <ul class="left">
+                      <li>
+                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+                <p class="grey-text">Additional information will be displayed here in future updates.</p>
+              </div>
+              
+              <!-- History Tab (placeholder for future implementation) -->
+              <div id="history-tab" class="col s12">
+                <!-- Tab navbar -->
+                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                  <div class="nav-wrapper">
+                    <ul class="left">
+                      <li>
+                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+                <p class="grey-text">History and change log will be displayed here in future updates.</p>
+              </div>
+              
+              <!-- Documents Tab (placeholder for future implementation) -->
+              <div id="documents-tab" class="col s12">
+                <!-- Tab navbar -->
+                <nav class="tab-navbar z-depth-0 transparent" style="margin-bottom: 20px;">
+                  <div class="nav-wrapper">
+                    <ul class="left">
+                      <li>
+                        <a href="#!" class="btn-flat waves-effect waves-light disabled">
+                          <i class="material-icons left" style="color: #a9b7d0;">edit</i><span style="color: #a9b7d0;">Edit</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+                <p class="grey-text">Related documents will be displayed here in future updates.</p>
+              </div>
+            </div>
+          </div>
+          
           <script>
             $(function() {
               if (window.cache && window.cache.osseParentList) {
                 console.log('Parent template loaded with cache already available. Populating list...');
                 window.populateParentList();
+                
+                // After populating the parent list, show and populate related data
+                const urlParams = new URLSearchParams(window.location.search);
+                const parentId = urlParams.get('id');
+                
+                if (parentId) {
+                  // Initialize tabs
+                  $('.tabs').tabs();
+                  
+                  // Show related data container
+                  $('#related-data-container').show();
+                  
+                  // Populate requirements tab
+                  populateRequirementsTab(parentId);
+                  
+                  // Store original requirement data for edit cancellation
+                  storeOriginalRequirementData(parentId);
+                  
+                  // Set up edit mode handlers
+                  setupEditModeHandlers();
+                }
               } else {
                 console.log('Parent template loaded but cache not yet available. List will be populated when cache is ready.');
               }
@@ -44,6 +257,282 @@
                 }
               });
             });
+            
+            // Function to store original requirement data
+            function storeOriginalRequirementData(parentId) {
+              const parentItem = window.cache.findById('osseParentList', parseInt(parentId, 10));
+              
+              if (parentItem && parentItem.Requirements && parentItem.Requirements.length > 0) {
+                const requirement = parentItem.Requirements[0];
+                window.originalRequirementData = {
+                  ProgrammeTeamComments: requirement.ProgrammeTeamComments || '',
+                  DataRequired: requirement.DataRequired || '',
+                  FocalPointComments: requirement.FocalPointComments || ''
+                };
+              } else {
+                window.originalRequirementData = null;
+              }
+            }
+            
+            // Function to populate requirements tab with related data
+            function populateRequirementsTab(parentId) {
+              console.log(`Populating requirements for parent ID: ${parentId}`);
+              
+              // Find the parent item
+              const parentItem = window.cache.findById('osseParentList', parseInt(parentId, 10));
+              
+              if (parentItem && parentItem.Requirements && parentItem.Requirements.length > 0) {
+                // Get the first (and should be only) requirement
+                const requirement = parentItem.Requirements[0];
+                console.log(`Found requirement for parent ID: ${parentId}`, requirement);
+                
+                // Populate the form fields
+                $('#programme-team-comments').val(requirement.ProgrammeTeamComments || '').trigger('change');
+                $('#data-required').val(requirement.DataRequired || '').trigger('change');
+                $('#focal-point-comments').val(requirement.FocalPointComments || '').trigger('change');
+                
+                // Make sure the labels stay active (MaterializeCSS feature)
+                M.updateTextFields();
+                
+                // Resize textareas to fit content
+                M.textareaAutoResize($('#programme-team-comments'));
+                M.textareaAutoResize($('#data-required'));
+                M.textareaAutoResize($('#focal-point-comments'));
+                
+                // Show the form and hide the "no requirement" message
+                $('#requirement-form-content').show();
+                $('#no-requirement-container').hide();
+                
+                // Show the Edit button
+                $('#edit-requirements-btn').show();
+              } else {
+                console.log(`No requirements found for parent ID: ${parentId}`);
+                
+                // Clear form fields
+                $('#programme-team-comments').val('').trigger('change');
+                $('#data-required').val('').trigger('change');
+                $('#focal-point-comments').val('').trigger('change');
+                
+                // Hide the form and show the "no requirement" message
+                $('#requirement-form-content').hide();
+                $('#no-requirement-container').show();
+                
+                // Hide the Edit button since there's nothing to edit
+                $('#edit-requirements-btn').hide();
+              }
+            }
+            
+            // Function to set up edit mode handlers
+            function setupEditModeHandlers() {
+              // Edit button click handler - use a simple click handler to avoid event conflicts
+              $('#edit-requirements-btn').off('click').on('click', function(e) {
+                // Prevent default to avoid any navigation
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Edit button clicked');
+                
+                // Enable form fields
+                $('#programme-team-comments').prop('disabled', false);
+                $('#data-required').prop('disabled', false);
+                $('#focal-point-comments').prop('disabled', false);
+                
+                // Show save/cancel buttons
+                $('#requirement-form-actions').show();
+                
+                // Hide edit button
+                $(this).hide();
+                
+                // Focus on first field
+                $('#programme-team-comments').focus();
+                
+                return false;
+              });
+              
+              // Create requirement button click handler
+              $('#create-requirement-btn').off('click').on('click', function(e) {
+                // Prevent default
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Create requirement button clicked');
+                
+                // Show the form and hide the "no requirement" message
+                $('#requirement-form-content').show();
+                $('#no-requirement-container').hide();
+                
+                // Enable the form fields for creating a new requirement
+                $('#programme-team-comments').prop('disabled', false).val('').trigger('change');
+                $('#data-required').prop('disabled', false).val('').trigger('change');
+                $('#focal-point-comments').prop('disabled', false).val('').trigger('change');
+                
+                // Make sure labels stay active
+                M.updateTextFields();
+                
+                // Show the save/cancel buttons
+                $('#requirement-form-actions').show();
+                
+                // Hide the edit button
+                $('#edit-requirements-btn').hide();
+                
+                // Focus on the first field
+                $('#programme-team-comments').focus();
+                
+                return false;
+              });
+              
+              // Cancel button click handler
+              $('#cancel-requirements-btn').off('click').on('click', function(e) {
+                // Prevent default
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Cancel button clicked');
+                
+                // Get the current parent ID
+                const urlParams = new URLSearchParams(window.location.search);
+                const parentId = parseInt(urlParams.get('id'), 10);
+                const parentItem = window.cache.findById('osseParentList', parentId);
+                
+                // Check if we're canceling a new requirement creation or an edit
+                if (parentItem && parentItem.Requirements && parentItem.Requirements.length > 0) {
+                  // This is an edit cancellation - restore original data
+                  if (window.originalRequirementData) {
+                    $('#programme-team-comments').val(window.originalRequirementData.ProgrammeTeamComments).trigger('change');
+                    $('#data-required').val(window.originalRequirementData.DataRequired).trigger('change');
+                    $('#focal-point-comments').val(window.originalRequirementData.FocalPointComments).trigger('change');
+                    
+                    // Resize textareas to fit content
+                    M.textareaAutoResize($('#programme-team-comments'));
+                    M.textareaAutoResize($('#data-required'));
+                    M.textareaAutoResize($('#focal-point-comments'));
+                  }
+                  
+                  // Disable form fields
+                  $('#programme-team-comments').prop('disabled', true);
+                  $('#data-required').prop('disabled', true);
+                  $('#focal-point-comments').prop('disabled', true);
+                  
+                  // Hide save/cancel buttons
+                  $('#requirement-form-actions').hide();
+                  
+                  // Show edit button
+                  $('#edit-requirements-btn').show();
+                } else {
+                  // This is a new requirement creation cancellation - go back to "no requirement" state
+                  $('#requirement-form-content').hide();
+                  $('#no-requirement-container').show();
+                  
+                  // Clear form fields
+                  $('#programme-team-comments').val('').trigger('change');
+                  $('#data-required').val('').trigger('change');
+                  $('#focal-point-comments').val('').trigger('change');
+                  
+                  // Hide save/cancel buttons
+                  $('#requirement-form-actions').hide();
+                }
+                
+                return false;
+              });
+              
+              // Save button click handler
+              $('#save-requirements-btn').off('click').on('click', function(e) {
+                // Prevent default
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Save button clicked');
+                
+                // Get the updated values
+                const updatedData = {
+                  ProgrammeTeamComments: $('#programme-team-comments').val(),
+                  DataRequired: $('#data-required').val(),
+                  FocalPointComments: $('#focal-point-comments').val()
+                };
+                
+                // Show saving indicator
+                showProgress();
+                
+                // Get the current parent ID and requirement ID
+                const urlParams = new URLSearchParams(window.location.search);
+                const parentId = parseInt(urlParams.get('id'), 10);
+                
+                // Get the requirement ID if a requirement exists
+                const parentItem = window.cache.findById('osseParentList', parentId);
+                
+                // Variable to store the promise
+                let savePromise;
+                
+                if (parentItem && parentItem.Requirements && parentItem.Requirements.length > 0) {
+                  // This is an update operation - get the first requirement's ID
+                  const requirementId = parentItem.Requirements[0].Id;
+                  console.log('Updating existing requirement:', requirementId);
+                  
+                  // Call the updateRequirement function
+                  savePromise = data.updateRequirement(requirementId, updatedData);
+                } else {
+                  // This is a create operation
+                  console.log('Creating new requirement for parent:', parentId);
+                  
+                  // Call the createRequirement function
+                  savePromise = data.createRequirement(parentId, updatedData);
+                }
+                
+                // Process the result of the save operation
+                savePromise
+                  .then(function(result) {
+                    console.log('Requirement saved successfully:', result);
+                    
+                    // Update the original data
+                    window.originalRequirementData = { ...updatedData };
+                    
+                    // Show success notification
+                    M.toast({
+                      html: 'Changes saved successfully!',
+                      classes: 'green rounded',
+                      displayLength: 2000
+                    });
+                    
+                    // Hide progress indicator
+                    hideProgress();
+                    
+                    // If this was a new requirement, refresh the page to show it
+                    if (!parentItem.Requirements || parentItem.Requirements.length === 0) {
+                      // Reload the current page to refresh the data
+                      setTimeout(function() {
+                        window.location.reload();
+                      }, 1000);
+                    }
+                  })
+                  .catch(function(error) {
+                    console.error('Error saving requirement:', error);
+                    
+                    // Show error notification
+                    M.toast({
+                      html: 'Error saving changes: ' + (error.message || 'Unknown error'),
+                      classes: 'red rounded',
+                      displayLength: 3000
+                    });
+                    
+                    // Hide progress indicator
+                    hideProgress();
+                  })
+                  .finally(function() {
+                    // Disable form fields
+                    $('#programme-team-comments').prop('disabled', true);
+                    $('#data-required').prop('disabled', true);
+                    $('#focal-point-comments').prop('disabled', true);
+                    
+                    // Hide save/cancel buttons
+                    $('#requirement-form-actions').hide();
+                    
+                    // Show edit button
+                    $('#edit-requirements-btn').show();
+                  });
+                
+                return false;
+              });
+            }
           </script>
         </div>
       </div>
