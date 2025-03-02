@@ -1,217 +1,388 @@
-<div class="section">
-  <!-- First row - Badges and Buttons -->
-  <div class="row">
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Badges</span>
-          <p>Badges can notify you that there are new or unread messages or notifications.</p>
-          <div class="collection">
-            <a href="#!" class="collection-item">Inbox<span class="new badge">4</span></a>
-            <a href="#!" class="collection-item">Messages<span class="new badge blue">12</span></a>
-            <a href="#!" class="collection-item">Orders<span class="badge">14</span></a>
-            <a href="#!" class="collection-item">Alerts<span class="new badge red">3</span></a>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Buttons</span>
-          <p>Examples of different button styles and sizes.</p>
-          <div class="row">
-            <div class="col s12">
-              <button class="btn waves-effect waves-light">Normal Button</button>
-              <button class="btn-large waves-effect waves-light red">Large Button</button>
-              <a class="waves-effect waves-light btn-small green"><i class="material-icons left">cloud</i>Small</a>
-              <a class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">add</i></a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col s12">
-              <button class="btn-flat">Flat Button</button>
-              <button class="btn waves-effect waves-light disabled">Disabled</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Second row - Advanced Form -->
-  <div class="row">
-    <div class="col s12">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Advanced Form Elements</span>
-          <p>Example of a more complex form with various input types.</p>
-          
-          <div class="row" style="margin-bottom: 0;">
-            <form class="col s12" style="padding: 0;">
-              <div class="row" style="margin-bottom: 10px;">
-                <div class="input-field col s12 m6">
-                  <input id="first_name" type="text" class="validate">
-                  <label for="first_name">First Name</label>
-                </div>
-                <div class="input-field col s12 m6">
-                  <input id="last_name" type="text" class="validate">
-                  <label for="last_name">Last Name</label>
-                </div>
-              </div>
-              
-              <div class="row" style="margin-bottom: 10px;">
-                <div class="input-field col s12">
-                  <input id="email" type="email" class="validate">
-                  <label for="email">Email</label>
-                  <span class="helper-text" data-error="Please enter a valid email" data-success="Valid email format">Enter your email address</span>
-                </div>
-              </div>
-              
-              <div class="row" style="margin-bottom: 10px;">
-                <div class="input-field col s12 m6">
-                  <select>
-                    <option value="" disabled selected>Choose your department</option>
-                    <option value="1">Marketing</option>
-                    <option value="2">Sales</option>
-                    <option value="3">Engineering</option>
-                    <option value="4">Human Resources</option>
-                    <option value="5">Customer Support</option>
-                  </select>
-                  <label>Department</label>
-                </div>
-                
-                <div class="input-field col s12 m6">
-                  <input type="text" class="datepicker" id="birthdate">
-                  <label for="birthdate">Date of Birth</label>
-                </div>
-              </div>
-              
-              <div class="row" style="margin-bottom: 10px;">
-                <div class="col s12 m6">
-                  <label>Notification Preferences</label>
-                  <p style="margin: 3px 0;">
-                    <label>
-                      <input type="checkbox" class="filled-in" checked="checked" />
-                      <span>Email notifications</span>
-                    </label>
-                  </p>
-                  <p style="margin: 3px 0;">
-                    <label>
-                      <input type="checkbox" class="filled-in" />
-                      <span>SMS notifications</span>
-                    </label>
-                  </p>
-                </div>
-                
-                <div class="col s12 m6">
-                  <div class="switch" style="margin-top: 20px;">
-                    <label>
-                      Dark Mode: Off
-                      <input type="checkbox">
-                      <span class="lever"></span>
-                      On
-                    </label>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="row" style="margin-bottom: 0;">
-                <div class="col s12">
-                  <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                    <i class="material-icons right">send</i>
-                  </button>
-                  <button class="btn waves-effect waves-light grey" type="reset" name="action">Reset
-                    <i class="material-icons right">clear</i>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Third row - Chips and Forms -->
-  <div class="row">
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Chips</span>
-          <p>Chips represent complex entities in small blocks.</p>
-          
-          <div class="chip">
-            Basic Chip
-            <i class="close material-icons">close</i>
-          </div>
-          
-          <div class="chip">
-            <img src="../SiteAssets/awacs.jpg" alt="Contact Person">
-            Jane Doe
-            <i class="close material-icons">close</i>
-          </div>
-          
-          <div class="chip blue white-text">
-            Colored Chip
-            <i class="close material-icons">close</i>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Form Elements</span>
-          
-          <div class="row">
-            <div class="input-field col s12">
-              <input id="input_text" type="text" data-length="10">
-              <label for="input_text">Input text</label>
-            </div>
-          </div>
-          
-          <div class="row">
-            <div class="input-field col s12">
-              <select>
-                <option value="" disabled selected>Choose your option</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
-              </select>
-              <label>Materialize Select</label>
-            </div>
-          </div>
-          
-          <div class="row">
-            <div class="col s12">
-              <p>
-                <label>
-                  <input type="checkbox" class="filled-in" checked="checked" />
-                  <span>Filled in</span>
-                </label>
-              </p>
-              <p>
-                <label>
-                  <input name="group1" type="radio" checked />
-                  <span>Radio button</span>
-                </label>
-              </p>
-              <div class="switch">
-                <label>
-                  Off
-                  <input type="checkbox" checked>
-                  <span class="lever"></span>
-                  On
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="section">
+  <!-- Custom styles for form elements -->
+  <style>
+    /* Override checkbox and radio button colors */
+    [type="checkbox"].filled-in:checked + span:not(.lever):after {
+      border: 2px solid #47b2c7;
+      background-color: #47b2c7;
+    }
+    
+    [type="radio"]:checked + span:after, 
+    [type="radio"].with-gap:checked + span:after {
+      background-color: #47b2c7;
+      border: 2px solid #47b2c7;
+    }
+    
+    [type="radio"]:not(:checked) + span:before, 
+    [type="radio"]:not(:checked) + span:after {
+      border: 2px solid #9e9e9e;
+    }
+    
+    /* Override switch colors */
+    .switch label input[type=checkbox]:checked + .lever {
+      background-color: rgba(71, 178, 199, 0.4);
+    }
+    
+    .switch label input[type=checkbox]:checked + .lever:after {
+      background-color: #47b2c7;
+    }
+    
+    /* Override select dropdown colors */
+    .dropdown-content li > a, .dropdown-content li > span {
+      color: #47b2c7;
+    }
+    
+    /* Override input focus color */
+    input:focus {
+      border-bottom: 1px solid #47b2c7 !important;
+      box-shadow: 0 1px 0 0 #47b2c7 !important;
+    }
+    
+    .input-field label.active {
+      color: #47b2c7;
+    }
+    
+    /* Override datepicker colors */
+    .datepicker-date-display {
+      background-color: #3f4d67;
+    }
+    
+    .datepicker-table td.is-selected {
+      background-color: #47b2c7;
+    }
+    
+    .datepicker-cancel, .datepicker-done {
+      color: #47b2c7;
+    }
+    
+    /* Override helper text colors */
+    .helper-text[data-success] {
+      color: #47b2c7 !important;
+    }
+  </style>
+  
+  <!-- Color Scheme Row - First -->
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Color Scheme</span>
+          <p>These are the main colors used throughout the OSSE Portal.</p>
+          
+          <div class="row" style="margin-top: 20px;">
+            <div class="col s12 m3">
+              <div class="card-panel" style="background-color: #3f4d67; height: 100px;">
+                <span class="white-text">Primary Color<br>#3f4d67<br>Dark Grey-Blue</span>
+              </div>
+            </div>
+            <div class="col s12 m3">
+              <div class="card-panel" style="background-color: #47b2c7; height: 100px;">
+                <span class="white-text">Accent Color<br>#47b2c7<br>Teal-Blue</span>
+              </div>
+            </div>
+            <div class="col s12 m3">
+              <div class="card-panel" style="background-color: #a9b7d0; height: 100px;">
+                <span class="white-text">Text Color<br>#a9b7d0<br>Light Grey-Blue</span>
+              </div>
+            </div>
+            <div class="col s12 m3">
+              <div class="card-panel" style="background-color: #f3f7fa; height: 100px; border: 1px solid #eee;">
+                <span class="grey-text text-darken-2">Background<br>#f3f7fa<br>Light Grey</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badges and Buttons -->
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Badges</span>
+          <p>Badges can notify you that there are new or unread messages or notifications.</p>
+          <div class="collection">
+            <a href="#!" class="collection-item">Inbox<span class="new badge" style="background-color: #3f4d67;">4</span></a>
+            <a href="#!" class="collection-item">Messages<span class="new badge" style="background-color: #47b2c7;">12</span></a>
+            <a href="#!" class="collection-item">Orders<span class="badge">14</span></a>
+            <a href="#!" class="collection-item">Alerts<span class="new badge" style="background-color: #e57373;">3</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col s12 m6">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Buttons</span>
+          <p>Examples of different button styles and sizes.</p>
+          <div class="row">
+            <div class="col s12">
+              <button class="btn waves-effect waves-light" style="background-color: #3f4d67;">Normal Button</button>
+              <button class="btn-large waves-effect waves-light" style="background-color: #47b2c7;">Large Button</button>
+              <a class="waves-effect waves-light btn-small" style="background-color: #4CAF50;"><i class="material-icons left">cloud</i>Small</a>
+              <a class="btn-floating btn-large waves-effect waves-light" style="background-color: #3f4d67;"><i class="material-icons">add</i></a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12">
+              <button class="btn-flat" style="color: #3f4d67;">Flat Button</button>
+              <button class="btn waves-effect waves-light disabled">Disabled</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Preloaders & Progress -->
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Preloaders & Progress Indicators</span>
+          <p>Loading indicators styled with the site's color scheme.</p>
+          
+          <div class="row" style="margin-top: 20px;">
+            <div class="col s12 m6">
+              <h6>Determinate Progress</h6>
+              <div class="progress" style="background-color: rgba(63, 77, 103, 0.1);">
+                <div class="determinate" style="width: 70%; background-color: #47b2c7;"></div>
+              </div>
+              
+              <div class="parent-progress-container">
+                <div class="parent-progress-bar">
+                  <div class="determinate" style="width: 70%;"></div>
+                </div>
+                <span class="parent-progress-status">Progress: 70%</span>
+              </div>
+            </div>
+            
+            <div class="col s12 m6">
+              <h6>Indeterminate Progress</h6>
+              <div class="progress" style="background-color: rgba(63, 77, 103, 0.1);">
+                <div class="indeterminate" style="background-color: #47b2c7;"></div>
+              </div>
+              
+              <div class="preloader-wrapper small active" style="margin-top: 10px;">
+                <div class="spinner-layer" style="border-color: #3f4d67;">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="preloader-wrapper active" style="margin-left: 20px;">
+                <div class="spinner-layer" style="border-color: #47b2c7;">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Advanced Form -->
+  <div class="row">
+    <div class="col s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Advanced Form Elements</span>
+          <p>Example of a more complex form with various input types.</p>
+          
+          <div class="row" style="margin-bottom: 0;">
+            <form class="col s12" style="padding: 0;">
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="input-field col s12 m6">
+                  <input id="first_name" type="text" class="validate">
+                  <label for="first_name">First Name</label>
+                </div>
+                <div class="input-field col s12 m6">
+                  <input id="last_name" type="text" class="validate">
+                  <label for="last_name">Last Name</label>
+                </div>
+              </div>
+              
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="input-field col s12">
+                  <input id="email" type="email" class="validate">
+                  <label for="email">Email</label>
+                  <span class="helper-text" data-error="Please enter a valid email" data-success="Valid email format">Enter your email address</span>
+                </div>
+              </div>
+              
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="input-field col s12 m6">
+                  <select>
+                    <option value="" disabled selected>Choose your department</option>
+                    <option value="1">Marketing</option>
+                    <option value="2">Sales</option>
+                    <option value="3">Engineering</option>
+                    <option value="4">Human Resources</option>
+                    <option value="5">Customer Support</option>
+                  </select>
+                  <label>Department</label>
+                </div>
+                
+                <div class="input-field col s12 m6">
+                  <input type="text" class="datepicker" id="birthdate">
+                  <label for="birthdate">Date of Birth</label>
+                </div>
+              </div>
+              
+              <div class="row" style="margin-bottom: 10px;">
+                <div class="col s12 m6">
+                  <label>Notification Preferences</label>
+                  <p style="margin: 3px 0;">
+                    <label>
+                      <input type="checkbox" class="filled-in" checked="checked" />
+                      <span>Email notifications</span>
+                    </label>
+                  </p>
+                  <p style="margin: 3px 0;">
+                    <label>
+                      <input type="checkbox" class="filled-in" />
+                      <span>SMS notifications</span>
+                    </label>
+                  </p>
+                </div>
+                
+                <div class="col s12 m6">
+                  <div class="switch" style="margin-top: 20px;">
+                    <label>
+                      Dark Mode: Off
+                      <input type="checkbox">
+                      <span class="lever"></span>
+                      On
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row" style="margin-bottom: 0;">
+                <div class="col s12">
+                  <button class="btn waves-effect waves-light" style="background-color: #47b2c7;" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                  </button>
+                  <button class="btn waves-effect waves-light grey" type="reset" name="action">Reset
+                    <i class="material-icons right">clear</i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Chips and Forms -->
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Chips</span>
+          <p>Chips represent complex entities in small blocks.</p>
+          
+          <div class="chip">
+            Basic Chip
+            <i class="close material-icons">close</i>
+          </div>
+          
+          <div class="chip">
+            <img src="../SiteAssets/awacs.jpg" alt="Contact Person">
+            Jane Doe
+            <i class="close material-icons">close</i>
+          </div>
+          
+          <div class="chip" style="background-color: #47b2c7; color: white;">
+            Colored Chip
+            <i class="close material-icons">close</i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col s12 m6">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Form Elements</span>
+          
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="input_text" type="text" data-length="10">
+              <label for="input_text">Input text</label>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="input-field col s12">
+              <select>
+                <option value="" disabled selected>Choose your option</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+              </select>
+              <label>Materialize Select</label>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col s12">
+              <p>
+                <label>
+                  <input type="checkbox" class="filled-in" checked="checked" />
+                  <span>Filled in</span>
+                </label>
+              </p>
+              <div style="margin-top: 15px;">
+                <p style="margin: 5px 0; font-weight: 500;">Priority Selection:</p>
+                <p style="margin: 0 0 5px 0;">
+                  <label>
+                    <input name="priority" type="radio" checked />
+                    <span>High</span>
+                  </label>
+                </p>
+                <p style="margin: 0 0 5px 0;">
+                  <label>
+                    <input name="priority" type="radio" />
+                    <span>Medium</span>
+                  </label>
+                </p>
+                <p style="margin: 0 0 5px 0;">
+                  <label>
+                    <input name="priority" type="radio" />
+                    <span>Low</span>
+                  </label>
+                </p>
+              </div>
+              <div class="switch" style="margin-top: 15px;">
+                <label>
+                  Off
+                  <input type="checkbox" checked>
+                  <span class="lever"></span>
+                  On
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <br><br>

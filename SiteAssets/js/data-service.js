@@ -911,4 +911,76 @@ data.ensureDigest = function() {
   return data.getDigest();
 };
 
+/**
+ * Send an email using SharePoint's Utility.SendEmail API
+ * @param {Object} emailProps - Email properties
+ * @param {Array} emailProps.to - Recipients email addresses
+ * @param {string} emailProps.subject - Email subject
+ * @param {string} emailProps.body - Email body (can be HTML)
+ * @param {Array} [emailProps.cc] - CC recipients email addresses
+ * @param {boolean} [emailProps.isBodyHtml=false] - Whether body is HTML
+ * @returns {Promise} Promise that resolves when email is sent
+ */
+data.sendEmail = function(emailProps) {
+  // Validate required fields
+  if (!emailProps || !emailProps.to || !emailProps.subject || !emailProps.body) {
+    return Promise.reject(new Error('Email properties missing required fields: to, subject, and body'));
+  }
+  
+  // Ensure 'to' is an array
+  var toRecipients = Array.isArray(emailProps.to) ? emailProps.to : [emailProps.to];
+  
+  // Default email data
+  var emailData = {
+    'properties': {
+      '__metadata': { 'type': 'SP.Utilities.EmailProperties' },
+      'To': { 'results': toRecipients },
+      'Subject': emailProps.subject,
+      'Body': emailProps.body
+    }
+  };
+  
+  // Add optional CC if provided
+  if (emailProps.cc) {
+    var ccRecipients = Array.isArray(emailProps.cc) ? emailProps.cc : [emailProps.cc];
+    emailData.properties.CC = { 'results': ccRecipients };
+  }
+  
+  // Set isBodyHTML if provided
+  if (emailProps.isBodyHtml !== undefined) {
+    emailData.properties.IsBodyHtml = emailProps.isBodyHtml;
+  }
+  
+  // Get the digest and send the email
+  return data.ensureDigest().then(function(digest) {
+    console.log('Sending email to:', toRecipients);
+    
+    return new Promise(function(resolve, reject) {
+      $.ajax({
+        url: data.apiEndpoint + 'SP.Utilities.Utility.SendEmail',
+        type: 'POST',
+        contentType: 'application/json;odata=verbose',
+        headers: {
+          'Accept': 'application/json;odata=verbose',
+          'X-RequestDigest': digest
+        },
+        data: JSON.stringify(emailData),
+        success: function (data) {
+          console.log('Email sent successfully');
+          resolve(data);
+        },
+        error: function (xhr, status, error) {
+          console.error('Failed to send email:', error);
+          reject({
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseText: xhr.responseText,
+            error: error
+          });
+        }
+      });
+    });
+  });
+};
+
 // Namespaces are already exported to the global scope at the top of the file

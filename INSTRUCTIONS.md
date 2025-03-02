@@ -26,6 +26,7 @@
 - All UI components should leverage the MaterializeCSS framework to the maximum extent possible.
 - Custom UI elements should only be created when no suitable functionality is available in MaterializeCSS.
 - Follow the consistent color scheme defined in style.css with primary colors being #3f4d67 (dark gray-blue) and #47b2c7 (teal-blue accent).
+- When implementing components, refer to the Demo Components page for examples of the correct color usage and styling patterns.
 - All forms should use MaterializeCSS form elements with proper validation styles.
 - Navigation between views should use the router and maintain the history state appropriately.
 - Collection items should have a consistent layout pattern when displaying the same data type.

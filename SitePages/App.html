@@ -56,15 +56,14 @@
 		</div>
 	  </li>
 		
+      <li><a class="subheader">Navigation</a></li>
       <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/dashboard-template.html"><i class="material-icons">dashboard</i>Dashboard</a></li>
-	  <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/components-template.html"><i class="material-icons">view_module</i>Components</a></li>
-	  <li><a class="subheader">Navigation</a></li>
-      <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/dashboard-template.html">Load Dashboard</a></li>
-      <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/components-template.html">Load Components</a></li>
+	  <li><a href="#!" class="template-link" data-template="../SiteAssets/templates/components-template.html"><i class="material-icons">view_module</i>Demo Components</a></li>
+      <li><a class="subheader">Documents</a></li>
       <li class="no-padding">
         <ul class="collapsible collapsible-accordion">
           <li>
-            <a class="collapsible-header">Dropdown<i class="material-icons">arrow_drop_down</i></a>
+            <a class="collapsible-header">Document Library<i class="material-icons">arrow_drop_down</i></a>
             <div class="collapsible-body">
               <ul>
                 <li><a href="#!">First</a></li>
@@ -77,11 +76,6 @@
         </ul>
       </li>
 	  <!-- <li><div class="divider"></div></li> -->
-	  <li><a href="#!">Sidebar Link</a></li>
-	  <li><a href="#!">Sidebar Link</a></li>
-	  <li><a class="subheader">Subheader</a></li>
-	  <li><a href="#!">Sidebar Link</a></li>
-	  <li><a href="#!">Sidebar Link</a></li>
     </ul>
     <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
 
@@ -198,6 +192,83 @@
         console.warn('Current user information not available for sidebar');
         $('#user-display-name').text('User Not Available');
         $('#user-display-email').text('Please check connection');
+      }
+    }
+    
+    // Function to send a test email to the current user
+    function sendTestEmail() {
+      // Show loading indicator
+      showProgress();
+      
+      // Check if we have current user information
+      if (!cache.currentUser || !cache.currentUser.Email) {
+        hideProgress();
+        M.toast({
+          html: 'Current user email not available',
+          classes: 'red',
+          displayLength: 3000
+        });
+        return;
+      }
+      
+      // Get the digest from cache if available
+      if (cache.requestDigest) {
+        // We have the digest already
+        sendEmailWithDigest(cache.requestDigest);
+      } else {
+        // Get a new digest
+        data.ensureDigest()
+          .then(function(digest) {
+            // Cache the digest for future use
+            cache.requestDigest = digest;
+            sendEmailWithDigest(digest);
+          })
+          .catch(function(error) {
+            console.error('Failed to get digest for email:', error);
+            hideProgress();
+            M.toast({
+              html: 'Error getting digest: ' + (error.message || 'Unknown error'),
+              classes: 'red',
+              displayLength: 3000
+            });
+          });
+      }
+      
+      // Function to send the email with the provided digest
+      function sendEmailWithDigest(digest) {
+        // Prepare email data
+        var emailData = {
+          to: [cache.currentUser.Email],
+          subject: 'Test Email from OSSE Portal',
+          body: '<h4>Hello ' + (cache.currentUser.Title || 'User') + '!</h4>' +
+                '<p>This is a test email sent from the OSSE Portal application.</p>' +
+                '<p>Time sent: ' + new Date().toLocaleString() + '</p>' +
+                '<p>This email confirms that the email sending functionality is working correctly.</p>' +
+                '<hr>' +
+                '<p><i>This is an automated message. Please do not reply.</i></p>',
+          isBodyHtml: true
+        };
+        
+        // Send the email
+        data.sendEmail(emailData)
+          .then(function() {
+            console.log('Test email sent successfully to:', cache.currentUser.Email);
+            hideProgress();
+            M.toast({
+              html: 'Email sent successfully to ' + cache.currentUser.Email,
+              classes: 'green',
+              displayLength: 3000
+            });
+          })
+          .catch(function(error) {
+            console.error('Failed to send test email:', error);
+            hideProgress();
+            M.toast({
+              html: 'Error sending email: ' + (error.message || 'Unknown error'),
+              classes: 'red',
+              displayLength: 3000
+            });
+          });
       }
     }
   </script>
