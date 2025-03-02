@@ -49,19 +49,40 @@ A modern administrative dashboard portal built with MaterializeCSS. This project
 
 The OSSE Portal is designed to load efficiently in a specific sequence to ensure optimal performance. Here's the detailed loading flow:
 
-```mermaid
-graph TD
-    A[1. Load App.html] --> B[2. Load CSS Assets]
-    B --> C[3. Load JS Libraries]
-    C --> D[4. Initialize Cache Service]
-    D --> E[5. Preload All Data]
-    E --> F[6. Preload HTML Templates]
-    F --> G[7. Render Initial View]
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#bbf,stroke:#333,stroke-width:2px
-    style E fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bbf,stroke:#333,stroke-width:2px
+```
+┌─────────────────┐
+│ 1. Load App.html│
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 2. Load CSS     │
+│    Assets       │
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 3. Load JS      │
+│    Libraries    │
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 4. Initialize   │
+│    Cache Service│
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 5. Preload All  │
+│    Data         │
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 6. Preload HTML │
+│    Templates    │
+└────────┬────────┘
+         ▼
+┌─────────────────┐
+│ 7. Render       │
+│    Initial View │
+└─────────────────┘
 ```
 
 ### Detailed Loading Process
