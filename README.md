@@ -4,7 +4,7 @@ A modern administrative dashboard portal built with MaterializeCSS. This project
 
 **Keywords**: materializecss admin, materialize admin template, materialize dashboard, material design admin, responsive admin template
 
-![OSSE Portal Screenshot](screen.png)
+![Screenshot](screen.png)
 
 ## Technology Stack
 
