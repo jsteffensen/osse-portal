@@ -47,12 +47,12 @@
 
 	<ul id="slide-out" class="sidenav sidenav-fixed z-depth-2">
 	
-	  <li><div class="user-view">
+	  <li class="clickable" onclick="window.location.href='App.html'" style="cursor: pointer;"><div class="user-view">
 		<div class="background">
 			<img src="../SiteAssets/awacs.jpg">
 		  </div>
-		  <a href="#name"><span class="white-text name">John Doe</span></a>
-		  <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+		  <span class="white-text name" id="user-display-name">Loading...</span>
+		  <span class="white-text email" id="user-display-email">Please wait</span>
 		</div>
 	  </li>
 		
@@ -153,6 +153,9 @@
           console.log('9. Get request digest for POST operations:');
           console.log('   data.ensureDigest().then(digest => console.log("Digest obtained"))');
           
+          // Update user information in the sidebar
+          updateUserInfo();
+          
           // Hide loading indicator
           hideProgress();
           
@@ -183,6 +186,20 @@
           });
         });
     });
+    
+    // Function to update user information in the sidebar
+    function updateUserInfo() {
+      if (cache.currentUser) {
+        // Update the user name and email in the sidebar
+        $('#user-display-name').text(cache.currentUser.Title || 'Unknown User');
+        $('#user-display-email').text(cache.currentUser.Email || 'No Email');
+        console.log('User information updated in sidebar');
+      } else {
+        console.warn('Current user information not available for sidebar');
+        $('#user-display-name').text('User Not Available');
+        $('#user-display-email').text('Please check connection');
+      }
+    }
   </script>
 
   </body>

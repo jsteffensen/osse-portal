@@ -459,7 +459,12 @@ data.getCurrentUser = function(options) {
           cache: false,
           success: function(fallbackData) {
             console.log('Successfully loaded current user from fallback data');
-            resolve(fallbackData.d);
+            // Handle both formats: plain object or object with d property
+            if (fallbackData.d) {
+              resolve(fallbackData.d);
+            } else {
+              resolve(fallbackData);
+            }
           },
           error: function(xhr, status, fallbackError) {
             console.error('Failed to load fallback current user data:', fallbackError);
