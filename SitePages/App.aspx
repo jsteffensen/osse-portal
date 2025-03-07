@@ -4,34 +4,20 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Starter Template - Materialize</title>
+  <title>OSS&E Portal</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="../SiteAssets/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="../SiteAssets/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   
-  <style>
-    /* Top Progress Bar styling */
-    #top-progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 9999;
-      margin: 0;
-      display: none;
-    }
-    #top-progress-bar .indeterminate {
-      background-color: #2196F3; /* Blue color */
-    }
-  </style>
 </head>
 <body>
   <!-- Top Progress Bar -->
   <div id="top-progress-bar" class="progress">
     <div class="indeterminate"></div>
   </div>
+  
   <nav class="transparent" role="navigation">
     <div class="nav-wrapper container">
 	  
@@ -45,15 +31,14 @@
     </div>
   </nav>
 
-
 	<ul id="slide-out" class="sidenav sidenav-fixed z-depth-2">
 	
 	  <li><div class="user-view">
 		<div class="background">
 			<img src="../SiteAssets/awacs.jpg">
 		  </div>
-		  <a href="#name"><span class="white-text name">John Doe</span></a>
-		  <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+		  <a href="#name"><span class="white-text name">-</span></a>
+		  <a href="#email"><span class="white-text email">-</span></a>
 		</div>
 	  </li>
 		
@@ -84,7 +69,6 @@
 	  <li><a href="#!">Sidebar Link</a></li>
 	  <li><a href="#!">Sidebar Link</a></li>
     </ul>
-    <!-- <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a> -->
 
   <div class="container" id="content-container">
     <!-- Empty container that will be filled dynamically -->
@@ -93,94 +77,20 @@
     </div>
   </div>
 
-
-
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="../SiteAssets/js/materialize.js"></script>
   <script src="../SiteAssets/js/lib/bluebird.min.js"></script>
-  <script src="../SiteAssets/js/init.js"></script>
+  <!--  App specific-->
+  <script src="../SiteAssets/js/utils.js"></script>
   <script src="../SiteAssets/js/data-service.js"></script>
   <script src="../SiteAssets/js/cache-service.js"></script>
+  <script src="../SiteAssets/js/app.js"></script>
+  
   
   <script>
-    // Initialize services when document is ready
     $(function() {
-      // Show loading indicator
-      showProgress();
-      
-      // Conditional setting for fallback data
-      // In production SharePoint, this should be false
-      // For local development and testing, set to true
-      const isLocalDevelopment = window.location.hostname === 'localhost' || 
-                                 window.location.hostname === '127.0.0.1' ||
-                                 window.location.protocol === 'file:';
-      config.useFallbackData = isLocalDevelopment;
-      
-      // Initialize the cache service (which initializes data service)
-      cache.init()
-        .then(function() {
-          console.log('Cache and data services initialized successfully');
-          
-          // Log cache statistics after preloading
-          console.log('Cache stats:', cache.getStats());
-          
-          // Show sample data access examples in console
-          console.log('CACHE USAGE EXAMPLES:');
-          console.log('---------------------');
-          console.log('1. Access OSSE Parent List directly:');
-          console.log('   cache.osseParentList');
-          
-          console.log('2. Access OSSE Requirements List directly:');
-          console.log('   cache.osseRequirementList');
-          
-          console.log('3. Find OSSE parent items with high priority:');
-          console.log('   cache.find("osseParentList", item => item.Priority === "High")');
-          
-          console.log('4. Find requirements for a specific parent:');
-          console.log('   // Assuming the first parent item ID is used');
-          console.log('   const parentId = cache.osseParentList[0]?.Id;');
-          console.log('   cache.find("osseRequirementList", item => item.ParentId === parentId)');
-          
-          console.log('5. Access requirements directly through parent items:');
-          console.log('   // Each parent has the Requirements array automatically populated');
-          console.log('   cache.osseParentList[0]?.Requirements');
-          
-          console.log('6. Get current user:');
-          console.log('   cache.currentUser');
-          
-          console.log('7. Get all site users:');
-          console.log('   cache.siteUsers');
-          
-          console.log('8. Look up a user by ID:');
-          console.log('   cache.getUserById(15)'); // Jane Williams
-          
-          console.log('9. Get request digest for POST operations:');
-          console.log('   data.ensureDigest().then(digest => console.log("Digest obtained"))');
-          
-          // Hide loading indicator
-          hideProgress();
-          
-          // Show success toast
-          M.toast({
-            html: 'Data preloaded successfully!',
-            classes: 'green',
-            displayLength: 3000
-          });
-        })
-        .catch(function(error) {
-          console.error('Failed to initialize services:', error);
-          
-          // Hide loading indicator
-          hideProgress();
-          
-          // Show error toast
-          M.toast({
-            html: 'Error initializing: ' + (error.message || 'Unknown error'),
-            classes: 'red',
-            displayLength: 5000
-          });
-        });
+		app.init(),
     });
   </script>
 

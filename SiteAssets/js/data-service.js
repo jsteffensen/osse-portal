@@ -1,986 +1,142 @@
-/**
- * SharePoint Data Service Module
- * This module provides functions to interact with SharePoint APIs
- * using Bluebird promises for better performance and error handling.
- */
+const data = {};
 
-// Namespace for configuration settings
-window.config = {};
+data.apiEndpoint = 'https://collab.napma.nato.int/aircm/osse/_api/';
 
-// Namespace for data service functions
-window.data = {};
-
-// Cache object to store results
-data._cache = {};
-
-/**
- * Initialize the data service by loading configuration
- * @returns {Promise} Promise that resolves when initialization is complete
- */
-data.init = function() {
-  return new Promise(function(resolve, reject) {
+data.getJson = function(urlstring) {
+  return new Promise(function(resolve, reject) {    
     $.ajax({
-      url: '../SiteAssets/config.json',
+      url: urlstring,
+      type: 'GET',
       dataType: 'json',
-      cache: false,
-      success: function(configData) {
-        // Load the config data into the config namespace
-        for (var key in configData) {
-          config[key] = configData[key];
+      success: function(responseData) {
+        if(responseData) {
+          resolve(responseData);
+        } else {
+          resolve([]);
         }
-        
-        // Ensure derived endpoints are correct
-        config.apiListEndpoint = config.apiEndpoint + 'Web/Lists/';
-        config.apiUserEndpoint = config.apiEndpoint + 'Web/Siteusers/';
-        
-        console.log('Data service initialized successfully');
-        resolve(config);
       },
-      error: function(xhr, status, error) {
-        console.error('Failed to load configuration:', error);
+      error: function(jqxhr, status, error) {
         reject(error);
       }
     });
   });
 };
 
-/**
- * Helper for creating SharePoint REST API requests
- * @param {string} endpoint - The API endpoint
- * @param {Object} options - Request options
- * @returns {Promise} Promise that resolves with the API response
- */
-data._request = function(endpoint, options) {
-  options = options || {};
-  var method = options.method || 'GET';
-  var headers = {
-    'Accept': 'application/json;odata=verbose',
-    'Content-Type': 'application/json;odata=verbose'
-  };
-  
-  // Cache key for GET requests
-  var cacheKey = null;
-  if (method === 'GET') {
-    cacheKey = endpoint + JSON.stringify(options.data || {});
-    
-    // Check cache first
-    var cachedData = data._getFromCache(cacheKey);
-    if (cachedData) {
-      console.log('Using cached data for:', endpoint);
-      return Promise.resolve(cachedData);
-    }
-  }
-  
-  // Function to perform the actual request
-  function performRequest(digestValue) {
-    // Add SharePoint request digest for non-GET requests
-    if (method !== 'GET' && digestValue) {
-      headers['X-RequestDigest'] = digestValue;
-    }
-    
-    // Add any custom headers
-    if (options.headers) {
-      for (var key in options.headers) {
-        headers[key] = options.headers[key];
-      }
-    }
-    
-    // Create promise with jQuery AJAX
-    return new Promise(function(resolve, reject) {
-      $.ajax({
-        url: endpoint,
-        type: method,
-        headers: headers,
-        data: JSON.stringify(options.data),
-        success: function(response) {
-          // For GET requests, cache the result
-          if (method === 'GET' && cacheKey) {
-            data._addToCache(cacheKey, response);
-          }
-          resolve(response);
-        },
-        error: function(xhr, status, error) {
-          console.error('API request failed:', endpoint, error);
-          reject({
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error
-          });
-        }
-      });
-    });
-  }
-  
-  // For GET requests, we don't need a digest
-  if (method === 'GET') {
-    return performRequest();
-  }
-  
-  // For non-GET requests, ensure we have a valid digest first
-  return data.ensureDigest().then(function(digestValue) {
-    return performRequest(digestValue);
-  });
-};
-
-/**
- * Add data to the cache with timestamp
- * @param {string} key - Cache key
- * @param {Object} value - Data to cache
- */
-data._addToCache = function(key, value) {
-  data._cache[key] = {
-    timestamp: new Date(),
-    data: value
-  };
-};
-
-/**
- * Get data from cache if not expired
- * @param {string} key - Cache key
- * @returns {Object|null} Cached data or null if expired/not found
- */
-data._getFromCache = function(key) {
-  var cached = data._cache[key];
-  if (!cached) return null;
-  
-  var now = new Date();
-  var cacheTimeout = config.cacheTimeoutMinutes * 60 * 1000; // minutes to ms
-  if ((now - cached.timestamp) > cacheTimeout) {
-    // Cache expired
-    delete data._cache[key];
-    return null;
-  }
-  
-  return cached.data;
-};
-
-/**
- * Clear the entire cache or a specific key
- * @param {string} [key] - Optional key to clear specific item
- */
-data.clearCache = function(key) {
-  if (key) {
-    delete data._cache[key];
-  } else {
-    data._cache = {};
-  }
-  console.log(key ? 'Cleared cache for: ' + key : 'Cleared all cache');
-};
-
-/**
- * Get items from a SharePoint list
- * @param {string} listName - Name of the list
- * @param {Object} [options] - Query options
- * @returns {Promise} Promise that resolves with list items
- */
-data.getListItems = function(listName, options) {
-  options = options || {};
-  
-  // Build the endpoint URL
-  var endpoint = config.apiListEndpoint + 
-    "getbytitle('" + listName + "')/items";
-  
-  // Add query parameters
-  var queryParams = [];
-  
-  // Select specific fields
-  if (options.select) {
-    queryParams.push('$select=' + options.select);
-  }
-  
-  // Filter items
-  if (options.filter) {
-    queryParams.push('$filter=' + options.filter);
-  }
-  
-  // Order items
-  if (options.orderBy) {
-    queryParams.push('$orderby=' + options.orderBy);
-  }
-  
-  // Limit number of items
-  if (options.top) {
-    queryParams.push('$top=' + options.top);
-  } else if (config.defaultPageSize) {
-    queryParams.push('$top=' + config.defaultPageSize);
-  }
-  
-  // Skip items (for paging)
-  if (options.skip) {
-    queryParams.push('$skip=' + options.skip);
-  }
-  
-  // Expand related items
-  if (options.expand) {
-    queryParams.push('$expand=' + options.expand);
-  }
-  
-  // Add query parameters to endpoint
-  if (queryParams.length > 0) {
-    endpoint += '?' + queryParams.join('&');
-  }
-  
-  // Function to load from fallback file
-  function loadFallbackData(fallbackFile) {
-    console.log('Loading data from fallback file: ' + fallbackFile);
-    
-    return new Promise(function(resolve, reject) {
-      $.ajax({
-        url: fallbackFile,
-        dataType: 'json',
-        cache: false,
-        success: function(fallbackData) {
-          console.log('Successfully loaded fallback data');
-          // Only support newer format (value array)
-          if (fallbackData.value !== undefined) {
-            resolve(fallbackData.value);
-          } else {
-            console.warn('Unexpected fallback data format:', fallbackData);
-            resolve([]);
-          }
-        },
-        error: function(xhr, status, fallbackError) {
-          console.error('Fallback file failed to load:', fallbackError);
-          reject(fallbackError);
-        }
-      });
-    });
-  }
-  
-  // Get the fallback file path if available
-  var fallbackFile = null;
-  for (var key in config.lists) {
-    if (config.lists[key].name === listName && config.lists[key].fallbackFile) {
-      fallbackFile = config.lists[key].fallbackFile;
-      break;
-    }
-  }
-  
-  // If config says to use fallback data and we have a fallback file, use it directly
-  if (config.useFallbackData === true && fallbackFile) {
-    console.log('Using fallback data instead of API for list: ' + listName);
-    return loadFallbackData(fallbackFile);
-  }
-  
-  // Otherwise try the API first, then fall back if it fails
-  return data._request(endpoint)
-    .then(function(response) {
-      // Extract the items from the response
-      // Only support newer format (value array)
-      if (response.value !== undefined) {
-        return response.value;
-      } else {
-        console.warn('Unexpected API response format:', response);
-        return [];
-      }
-    })
-    .catch(function(error) {
-      // If we have a fallback file, try to load it
-      if (fallbackFile) {
-        console.warn('API request failed for list ' + listName + '. Trying fallback file: ' + fallbackFile);
-        return loadFallbackData(fallbackFile).catch(function(fallbackError) {
-          console.error('Both API request and fallback file failed for list: ' + listName);
-          console.error('Original error:', error);
-          console.error('Fallback error:', fallbackError);
-          throw error; // Throw the original error
-        });
-      } else {
-        // No fallback file, propagate the original error
-        console.error('API request failed for list ' + listName + ' and no fallback file specified');
-        throw error;
-      }
-    });
-};
-
-/**
- * Get a single item from a SharePoint list by ID
- * @param {string} listName - Name of the list
- * @param {number} itemId - ID of the item
- * @param {Object} [options] - Query options
- * @returns {Promise} Promise that resolves with the item
- */
-data.getListItem = function(listName, itemId, options) {
-  options = options || {};
-  
-  // Build the endpoint URL
-  var endpoint = config.apiListEndpoint + 
-    "getbytitle('" + listName + "')/items(" + itemId + ")";
-  
-  // Add query parameters
-  var queryParams = [];
-  
-  // Select specific fields
-  if (options.select) {
-    queryParams.push('$select=' + options.select);
-  }
-  
-  // Expand related items
-  if (options.expand) {
-    queryParams.push('$expand=' + options.expand);
-  }
-  
-  // Add query parameters to endpoint
-  if (queryParams.length > 0) {
-    endpoint += '?' + queryParams.join('&');
-  }
-  
-  // Make the request
-  return data._request(endpoint)
-    .then(function(response) {
-      // Handle both older SP format (response.d) and newer format (response directly)
-      if (response.d) {
-        return response.d;
-      } else {
-        return response;
-      }
-    });
-};
-
-/**
- * Create a new item in a SharePoint list
- * @param {string} listName - Name of the list
- * @param {Object} itemData - Data for the new item
- * @returns {Promise} Promise that resolves with the created item
- */
-data.createListItem = function(listName, itemData) {
-  // Build the endpoint URL
-  var endpoint = config.apiListEndpoint + 
-    "getbytitle('" + listName + "')/items";
-  
-  // Make the request
-  return data._request(endpoint, {
-    method: 'POST',
-    data: itemData
-  }).then(function(response) {
-    // Clear cache for this list
-    data.clearCache(config.apiListEndpoint + "getbytitle('" + listName + "')/items");
-    // Handle both older SP format (response.d) and newer format (response directly)
-    if (response.d) {
-      return response.d;
-    } else {
-      return response;
-    }
-  });
-};
-
-/**
- * Create a new requirement item associated with a parent
- * @param {number} parentId - ID of the parent item to associate with
- * @param {Object} requirementData - Data for the new requirement item
- * @returns {Promise} Promise that resolves with the created requirement item
- */
-data.createRequirement = function(parentId, requirementData) {
-  // Ensure we have a valid parent ID
-  if (!parentId) {
-    return Promise.reject(new Error('Parent ID is required to create a requirement'));
-  }
-  
-  // Get the list name from config
-  var listName = null;
-  for (var key in config.lists) {
-    if (key === 'osseRequirementList') {
-      listName = config.lists[key].name;
-      break;
-    }
-  }
-  
-  if (!listName) {
-    return Promise.reject(new Error('Requirement list configuration not found'));
-  }
-  
-  // Build the complete item data including the parent ID
-  var completeData = {
-    ParentId: parentId
-  };
-  
-  // Copy all requirement data to the complete data object
-  for (var prop in requirementData) {
-    if (requirementData.hasOwnProperty(prop)) {
-      completeData[prop] = requirementData[prop];
-    }
-  }
-  
-  // Use the standard createListItem function to create the item
-  return data.createListItem(listName, completeData)
-    .then(function(newItem) {
-      console.log('Created new requirement item:', newItem);
-      
-      // After creation, update cache to create the relationship
-      if (window.cache && window.cache.osseParentList && window.cache.osseRequirementList) {
-        // Find the parent item
-        var parentItem = window.cache.findById('osseParentList', parentId);
-        
-        if (parentItem) {
-          // Initialize Requirements array if it doesn't exist
-          if (!parentItem.Requirements) {
-            parentItem.Requirements = [];
-          }
-          
-          // Add the new requirement to the parent's Requirements array
-          parentItem.Requirements.push(newItem);
-          
-          // Add the parent reference to the requirement
-          newItem.Parent = parentItem;
-          
-          // Also add the new item to the requirements list
-          window.cache.osseRequirementList.push(newItem);
-          
-          console.log('Updated cache with new requirement relationship');
-        }
-      }
-      
-      return newItem;
-    });
-};
-
-/**
- * Update an existing item in a SharePoint list
- * @param {string} listName - Name of the list
- * @param {number} itemId - ID of the item to update
- * @param {Object} itemData - New data for the item
- * @returns {Promise} Promise that resolves when update is complete
- */
-data.updateListItem = function(listName, itemId, itemData) {
-  // Build the endpoint URL
-  var endpoint = config.apiListEndpoint + 
-    "getbytitle('" + listName + "')/items(" + itemId + ")";
-  
-  // Make the request
-  return data._request(endpoint, {
-    method: 'MERGE',
-    headers: {
-      'X-HTTP-Method': 'MERGE',
-      'If-Match': '*'
-    },
-    data: itemData
-  }).then(function(response) {
-    // Clear cache for this list
-    data.clearCache(config.apiListEndpoint + "getbytitle('" + listName + "')/items");
-    data.clearCache(endpoint);
-    return response;
-  });
-};
-
-/**
- * Update an existing requirement item
- * @param {number} requirementId - ID of the requirement to update
- * @param {Object} requirementData - New data for the requirement
- * @returns {Promise} Promise that resolves when update is complete
- */
-data.updateRequirement = function(requirementId, requirementData) {
-  // Ensure we have a valid requirement ID
-  if (!requirementId) {
-    return Promise.reject(new Error('Requirement ID is required to update a requirement'));
-  }
-  
-  // Get the list name from config
-  var listName = null;
-  for (var key in config.lists) {
-    if (key === 'osseRequirementList') {
-      listName = config.lists[key].name;
-      break;
-    }
-  }
-  
-  if (!listName) {
-    return Promise.reject(new Error('Requirement list configuration not found'));
-  }
-  
-  // Use the standard updateListItem function to update the item
-  return data.updateListItem(listName, requirementId, requirementData)
-    .then(function(result) {
-      console.log('Updated requirement item:', requirementId);
-      
-      // After update, update the item in cache
-      if (window.cache && window.cache.osseRequirementList) {
-        // Find the requirement item in the cache
-        var requirementIndex = window.cache.osseRequirementList.findIndex(function(item) {
-          return item.Id === requirementId;
-        });
-        
-        if (requirementIndex !== -1) {
-          // Get the existing requirement
-          var existingRequirement = window.cache.osseRequirementList[requirementIndex];
-          
-          // Update the requirement properties
-          for (var prop in requirementData) {
-            if (requirementData.hasOwnProperty(prop)) {
-              existingRequirement[prop] = requirementData[prop];
-            }
-          }
-          
-          console.log('Updated requirement in cache');
-          
-          // If the requirement is linked to a parent, update that relationship too
-          if (existingRequirement.Parent && 
-              existingRequirement.Parent.Requirements && 
-              Array.isArray(existingRequirement.Parent.Requirements)) {
-            
-            // Find the requirement in the parent's Requirements array
-            var parentReqIndex = existingRequirement.Parent.Requirements.findIndex(function(req) {
-              return req.Id === requirementId;
-            });
-            
-            if (parentReqIndex !== -1) {
-              // Update the requirement in the parent's Requirements array
-              for (var parentProp in requirementData) {
-                if (requirementData.hasOwnProperty(parentProp)) {
-                  existingRequirement.Parent.Requirements[parentReqIndex][parentProp] = requirementData[parentProp];
-                }
-              }
-              
-              console.log('Updated requirement in parent relationship cache');
-            }
-          }
-        }
-      }
-      
-      return result;
-    });
-};
-
-/**
- * Delete an item from a SharePoint list
- * @param {string} listName - Name of the list
- * @param {number} itemId - ID of the item to delete
- * @returns {Promise} Promise that resolves when delete is complete
- */
-data.deleteListItem = function(listName, itemId) {
-  // Build the endpoint URL
-  var endpoint = config.apiListEndpoint + 
-    "getbytitle('" + listName + "')/items(" + itemId + ")";
-  
-  // Make the request
-  return data._request(endpoint, {
-    method: 'DELETE',
-    headers: {
-      'X-HTTP-Method': 'DELETE',
-      'If-Match': '*'
-    }
-  }).then(function(response) {
-    // Clear cache for this list
-    data.clearCache(config.apiListEndpoint + "getbytitle('" + listName + "')/items");
-    return response;
-  });
-};
-
-/**
- * Get the current user information
- * @param {Object} [options] - Query options
- * @returns {Promise} Promise that resolves with user information
- */
-data.getCurrentUser = function(options) {
-  options = options || {};
-  
-  // Get user configuration
-  var userConfig = config.users && config.users.currentUser;
-  var endpoint = config.apiEndpoint + (userConfig ? userConfig.endpoint : 'web/currentuser');
-  
-  // Add query parameters
-  var queryParams = [];
-  
-  // Select specific fields
-  if (options.select) {
-    queryParams.push('$select=' + options.select);
-  }
-  
-  // Expand related items
-  if (options.expand) {
-    queryParams.push('$expand=' + options.expand);
-  }
-  
-  // Add query parameters to endpoint
-  if (queryParams.length > 0) {
-    endpoint += '?' + queryParams.join('&');
-  }
-  
-  // Function to load from fallback file
-  function loadFallbackData() {
-    if (userConfig && userConfig.fallbackFile) {
-      console.log('Loading current user from fallback file:', userConfig.fallbackFile);
-      
-      return new Promise(function(resolve, reject) {
-        $.ajax({
-          url: userConfig.fallbackFile,
-          dataType: 'json',
-          cache: false,
-          success: function(fallbackData) {
-            console.log('Successfully loaded current user from fallback data');
-            // Handle both formats: plain object or object with d property
-            if (fallbackData.d) {
-              resolve(fallbackData.d);
-            } else {
-              resolve(fallbackData);
-            }
-          },
-          error: function(xhr, status, fallbackError) {
-            console.error('Failed to load fallback current user data:', fallbackError);
-            reject(fallbackError);
-          }
-        });
-      });
-    } else {
-      return Promise.reject(new Error('No fallback file specified for current user'));
-    }
-  }
-  
-  // If using fallback data directly
-  if (config.useFallbackData === true && userConfig && userConfig.fallbackFile) {
-    console.log('Using fallback data instead of API for current user');
-    return loadFallbackData();
-  }
-  
-  // Make the request with fallback
-  return data._request(endpoint)
-    .then(function(response) {
-      return response.d;
-    })
-    .catch(function(error) {
-      console.warn('API request failed for current user. Trying fallback file.');
-      return loadFallbackData().catch(function(fallbackError) {
-        console.error('Both API request and fallback file failed for current user');
-        console.error('Original error:', error);
-        console.error('Fallback error:', fallbackError);
-        throw error; // Throw the original error
-      });
-    });
-};
-
-/**
- * Get user profile information
- * @param {string} [loginName] - Optional login name (defaults to current user)
- * @returns {Promise} Promise that resolves with profile information
- */
-data.getUserProfile = function(loginName) {
-  var promise;
-  
-  // If no login name provided, get current user first
-  if (!loginName) {
-    promise = data.getCurrentUser().then(function(user) {
-      return user.LoginName;
-    });
-  } else {
-    promise = Promise.resolve(loginName);
-  }
-  
-  return promise.then(function(login) {
-    // Build the endpoint URL
-    var endpoint = config.apiEndpoint + 
-      "SP.UserProfiles.PeopleManager/GetPropertiesFor(accountName=@v)?@v='" + 
-      encodeURIComponent(login) + "'";
-    
-    // Make the request
-    return data._request(endpoint)
-      .then(function(response) {
-        return response.d;
-      });
-  });
-};
-
-/**
- * Get all users in the site
- * @param {Object} [options] - Query options
- * @returns {Promise} Promise that resolves with the site users
- */
-data.getSiteUsers = function(options) {
-  options = options || {};
-  
-  // Get user configuration
-  var userConfig = config.users && config.users.siteUsers;
-  var endpoint = config.apiEndpoint + (userConfig ? userConfig.endpoint : 'web/siteusers');
-  
-  // Add query parameters
-  var queryParams = [];
-  
-  // Select specific fields
-  if (options.select) {
-    queryParams.push('$select=' + options.select);
-  }
-  
-  // Filter users
-  if (options.filter) {
-    queryParams.push('$filter=' + options.filter);
-  }
-  
-  // Order by
-  if (options.orderBy) {
-    queryParams.push('$orderby=' + options.orderBy);
-  }
-  
-  // Add query parameters to endpoint
-  if (queryParams.length > 0) {
-    endpoint += '?' + queryParams.join('&');
-  }
-  
-  // Function to load from fallback file
-  function loadFallbackData() {
-    if (userConfig && userConfig.fallbackFile) {
-      console.log('Loading site users from fallback file:', userConfig.fallbackFile);
-      
-      return new Promise(function(resolve, reject) {
-        $.ajax({
-          url: userConfig.fallbackFile,
-          dataType: 'json',
-          cache: false,
-          success: function(fallbackData) {
-            console.log('Successfully loaded site users from fallback data');
-            // Only support newer format (value array)
-            if (fallbackData.value !== undefined) {
-              resolve(fallbackData.value);
-            } else {
-              console.warn('Unexpected fallback data format:', fallbackData);
-              resolve([]);
-            }
-          },
-          error: function(xhr, status, fallbackError) {
-            console.error('Failed to load fallback site users data:', fallbackError);
-            reject(fallbackError);
-          }
-        });
-      });
-    } else {
-      return Promise.reject(new Error('No fallback file specified for site users'));
-    }
-  }
-  
-  // If using fallback data directly
-  if (config.useFallbackData === true && userConfig && userConfig.fallbackFile) {
-    console.log('Using fallback data instead of API for site users');
-    return loadFallbackData();
-  }
-  
-  // Make the request with fallback
-  return data._request(endpoint)
-    .then(function(response) {
-      // Only support newer format (value array)
-      if (response.value !== undefined) {
-        return response.value;
-      } else {
-        console.warn('Unexpected API response format:', response);
-        return [];
-      }
-    })
-    .catch(function(error) {
-      console.warn('API request failed for site users. Trying fallback file.');
-      return loadFallbackData().catch(function(fallbackError) {
-        console.error('Both API request and fallback file failed for site users');
-        console.error('Original error:', error);
-        console.error('Fallback error:', fallbackError);
-        throw error; // Throw the original error
-      });
-    });
-};
-
-/**
- * Get all lists in the site
- * @param {Object} [options] - Query options
- * @returns {Promise} Promise that resolves with the lists
- */
-data.getLists = function(options) {
-  options = options || {};
-  
-  // Build the endpoint URL
-  var endpoint = config.apiEndpoint + 'web/lists';
-  
-  // Add query parameters
-  var queryParams = [];
-  
-  // Select specific fields
-  if (options.select) {
-    queryParams.push('$select=' + options.select);
-  } else {
-    queryParams.push('$select=Id,Title,ItemCount,LastItemModifiedDate');
-  }
-  
-  // Filter lists
-  if (options.filter) {
-    queryParams.push('$filter=' + options.filter);
-  }
-  
-  // Add query parameters to endpoint
-  if (queryParams.length > 0) {
-    endpoint += '?' + queryParams.join('&');
-  }
-  
-  // Make the request
-  return data._request(endpoint)
-    .then(function(response) {
-      if (response.value !== undefined) {
-        return response.value;
-      } else {
-        console.warn('Unexpected API response format for getLists:', response);
-        return [];
-      }
-    });
-};
-
-/**
- * Get the SharePoint request digest value
- * This is required for POST operations
- * @returns {Promise} Promise that resolves with the request digest value
- */
-data.getDigest = function() {
-  // Create a fallback file path for digest
-  var fallbackDigestFile = '../SiteAssets/FallbackData/digest.json';
-  
-  // Function to load from fallback file
-  function loadFallbackDigest() {
-    console.log('Loading digest from fallback file:', fallbackDigestFile);
-    
-    return new Promise(function(resolve, reject) {
-      $.ajax({
-        url: fallbackDigestFile,
-        dataType: 'json',
-        cache: false,
-        success: function(fallbackData) {
-          console.log('Successfully loaded digest from fallback data');
-          if (fallbackData.digest) {
-            // Simple digest format with just a digest property
-            resolve(fallbackData.digest);
-          } else if (fallbackData.d && fallbackData.d.GetContextWebInformation) {
-            // SharePoint format response
-            resolve(fallbackData.d.GetContextWebInformation.FormDigestValue);
-          } else {
-            console.error('Invalid digest data format in fallback file');
-            reject(new Error('Invalid digest data format'));
-          }
-        },
-        error: function(xhr, status, fallbackError) {
-          console.error('Failed to load fallback digest data:', fallbackError);
-          // If no fallback, generate a fake digest (only for development)
-          var fakeDigest = 'DEV_DIGEST_' + new Date().toISOString();
-          console.warn('Using fake digest for development:', fakeDigest);
-          resolve(fakeDigest);
-        }
-      });
-    });
-  }
-  
-  // If using fallback data directly
-  if (config.useFallbackData === true) {
-    console.log('Using fallback data instead of API for digest');
-    return loadFallbackDigest();
-  }
-  
-  // Make the actual request
-  return new Promise(function(resolve, reject) {
-    $.ajax({
-      url: config.apiEndpoint + 'contextinfo',
+data.postJson = function(urlstring, postData) {
+  return new Promise(function(resolve, reject) { 
+    const postObj = {
+      url: urlstring,
       type: 'POST',
-      headers: { 'Accept': 'application/json;odata=verbose' },
-      success: function(response) {
-        var requestDigest = response.d.GetContextWebInformation.FormDigestValue;
-        console.log('Successfully obtained request digest');
-        
-        // Store the digest and its expiration time
-        data._digestValue = requestDigest;
-        data._digestExpires = new Date().getTime() + (response.d.GetContextWebInformation.FormDigestTimeoutSeconds * 1000) - 60000; // Subtract 1 minute for safety
-        
-        resolve(requestDigest);
+      headers: { 
+        'Accept': 'application/json;odata=verbose',
+        'Content-Type': 'application/json;odata=verbose'
       },
-      error: function(xhr, status, error) {
-        console.error('Error getting request digest:', error);
-        
-        // Try fallback
-        console.warn('Trying fallback digest...');
-        loadFallbackDigest()
-          .then(resolve)
-          .catch(function() {
-            reject(error);
-          });
+      data: JSON.stringify(postData),
+      success: function(responseData) {
+        resolve(responseData);
+      },
+      error: function(jqxhr, status, error) {
+        reject(error);
       }
-    });
-  });
-};
-
-/**
- * Get a valid digest value, refreshing if necessary
- * @returns {Promise} Promise that resolves with a valid digest value
- */
-data.ensureDigest = function() {
-  // Check if we have a valid digest already
-  var now = new Date().getTime();
-  if (data._digestValue && data._digestExpires && now < data._digestExpires) {
-    console.log('Using cached digest value');
-    return Promise.resolve(data._digestValue);
-  }
-  
-  // Otherwise get a new one
-  console.log('Digest expired or not available, requesting new one');
-  return data.getDigest();
-};
-
-/**
- * Send an email using SharePoint's Utility.SendEmail API
- * @param {Object} emailProps - Email properties
- * @param {Array} emailProps.to - Recipients email addresses
- * @param {string} emailProps.subject - Email subject
- * @param {string} emailProps.body - Email body (can be HTML)
- * @param {Array} [emailProps.cc] - CC recipients email addresses
- * @param {boolean} [emailProps.isBodyHtml=false] - Whether body is HTML
- * @returns {Promise} Promise that resolves when email is sent
- */
-data.sendEmail = function(emailProps) {
-  // Validate required fields
-  if (!emailProps || !emailProps.to || !emailProps.subject || !emailProps.body) {
-    return Promise.reject(new Error('Email properties missing required fields: to, subject, and body'));
-  }
-  
-  // Ensure 'to' is an array
-  var toRecipients = Array.isArray(emailProps.to) ? emailProps.to : [emailProps.to];
-  
-  // Default email data
-  var emailData = {
-    'properties': {
-      '__metadata': { 'type': 'SP.Utilities.EmailProperties' },
-      'To': { 'results': toRecipients },
-      'Subject': emailProps.subject,
-      'Body': emailProps.body
-    }
-  };
-  
-  // Add optional CC if provided
-  if (emailProps.cc) {
-    var ccRecipients = Array.isArray(emailProps.cc) ? emailProps.cc : [emailProps.cc];
-    emailData.properties.CC = { 'results': ccRecipients };
-  }
-  
-  // Set isBodyHTML if provided
-  if (emailProps.isBodyHtml !== undefined) {
-    emailData.properties.IsBodyHtml = emailProps.isBodyHtml;
-  }
-  
-  // Get the digest and send the email
-  return data.ensureDigest().then(function(digest) {
-    console.log('Sending email to:', toRecipients);
+    };
     
-    return new Promise(function(resolve, reject) {
-      $.ajax({
-        url: data.apiEndpoint + 'SP.Utilities.Utility.SendEmail',
-        type: 'POST',
-        contentType: 'application/json;odata=verbose',
-        headers: {
-          'Accept': 'application/json;odata=verbose',
-          'X-RequestDigest': digest
-        },
-        data: JSON.stringify(emailData),
-        success: function (data) {
-          console.log('Email sent successfully');
-          resolve(data);
-        },
-        error: function (xhr, status, error) {
-          console.error('Failed to send email:', error);
-          reject({
-            status: xhr.status,
-            statusText: xhr.statusText,
-            responseText: xhr.responseText,
-            error: error
-          });
-        }
-      });
+    $.ajax(postObj);
+  });
+};
+
+data.postJsonWithDigest = function(urlstring, postData, digest) {
+  return new Promise(function(resolve, reject) {
+    const headersWithDigest = {
+      'Accept': 'application/json;odata=verbose',
+      'Content-Type': 'application/json;odata=verbose',
+      'X-RequestDigest': digest
+    };
+
+    const postObj = {
+      url: urlstring,
+      type: 'POST',
+      headers: headersWithDigest,
+      data: JSON.stringify(postData),
+      success: function(responseData) {
+        resolve(responseData);
+      },
+      error: function(jqxhr, status, error) {
+        reject(error);
+      }
+    };
+    
+    $.ajax(postObj);
+  });
+};
+
+data.getList = function(listName, orderBy) {
+  return new Promise(function(resolve, reject) {
+    let urlstring = data.apiEndpoint + 'Web/Lists/' + listName + '/items';
+    
+    if(orderBy) {
+      urlstring = urlstring + '?orderby=' + orderBy;
+    }
+    
+    data.getJson(urlstring).then((responseData) => {
+      if(responseData.value) {
+        resolve(responseData.value);
+      } else {
+        resolve([]);
+      }
+    }, (error) => {
+      reject(error);
     });
   });
 };
 
-// Namespaces are already exported to the global scope at the top of the file
+data.getUsers = function() {
+  return new Promise(function(resolve, reject) {
+    const urlstring = data.apiEndpoint + 'Web/Siteusers/';
+    
+    data.getJson(urlstring).then((responseData) => {
+      resolve(responseData);
+    }, (error) => {
+      reject(error);
+    });
+  });
+};
+
+data.getDigest = function() {
+  return new Promise(function(resolve, reject) {
+    const urlstring = data.apiEndpoint + 'contextinfo';
+    
+    data.postJson(urlstring).then((responseData) => {
+      const requestDigest = responseData.d.GetContextWebInformation.FormDigestValue;
+      resolve(requestDigest);
+    }, (error) => {
+      reject(error);
+    });
+  });
+};
+
+data.sendEmail = function(digest) {
+  return new Promise(function(resolve, reject) {
+    const urlstring = data.apiEndpoint + 'SP.Utilities.Utility.SendEmail';
+    const recipients = ['steffensen@napma.nato.int'];
+    const subject = 'Test Email from SharePoint API';
+    const body = 'Hello, this is a test email sent from SharePoint!';
+    
+    const postData = {
+      'properties': {
+        '__metadata': { 'type': 'SP.Utilities.EmailProperties' },
+        'To': { 'results': recipients },
+        'Subject': subject,
+        'Body': body
+      }
+    };
+    
+    data.postJsonWithDigest(urlstring, postData, digest).then(() => {
+      resolve();
+    }, (error) => {
+      reject(error);
+    });
+  });
+};
+
+// Export the data object if using module system
+// module.exports = data;
