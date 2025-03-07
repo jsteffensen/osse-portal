@@ -137,6 +137,3 @@ data.sendEmail = function(digest) {
     });
   });
 };
-
-// Export the data object if using module system
-// module.exports = data;

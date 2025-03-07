@@ -8,6 +8,7 @@
 - The preloaded data and templates must all be put in the cache object and the cache object must be attached to the global window scope.
 - The only data loads permitted after initial page load, is if the user creates, updates or deletes data - after which action the cache shall be updated with only the specific data that was changed - not a complete cache refresh.
 - No comments shall be added inline in the js files.
+- No console.log() cals shall be made in the js files.
 
 
 ## JS Structure
