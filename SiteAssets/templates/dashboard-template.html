@@ -82,18 +82,6 @@
                   </p>
                 </li>
               </ul>
-              
-              <script>
-                // Try to populate immediately if cache is already loaded
-                $(function() {
-                  if (window.cache && window.cache.osseParentList) {
-                    console.log('Dashboard template loaded with cache already available. Populating collection...');
-                    window.populateOsseParentCollection();
-                  } else {
-                    console.log('Dashboard template loaded but cache not yet available. Collection will be populated when cache is ready.');
-                  }
-                });
-              </script>
             </div>
             <div class="card-action">
               <a href="#">View All Users</a>
