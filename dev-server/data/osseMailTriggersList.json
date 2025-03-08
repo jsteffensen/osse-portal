@@ -1,0 +1,27 @@
+{
+  "odata.metadata": "https://example.com/aircm/osse/_api/$metadata#SP.Data.OsseMailTriggersList",
+  "value": 
+	[
+	  {
+		"odata.type": "SP.Data.OsseMailTriggersListItem",
+		"odata.id": "822b8902-7de9-4962-8181-b784aab481cb",
+		"odata.etag": "\"1\"",
+		"odata.editLink": "Web/Lists(guid'48b4460b-b0ce-479e-b759-3a1aca706ca1')/Items(1)",
+		"FileSystemObjectType": 0,
+		"Id": 1,
+		"ServerRedirectedEmbedUri": null,
+		"ServerRedirectedEmbedUrl": "",
+		"ContentTypeId": "0x01003C8AAA8DF6BCA940BDA6B1F85B881800",
+		"Title": "test",
+		"ComplianceAssetId": null,
+		"UserIds": "[72]",
+		"ID": 1,
+		"Modified": "2025-02-27T08:26:28Z",
+		"Created": "2025-02-27T08:26:28Z",
+		"AuthorId": 72,
+		"EditorId": 72,
+		"OData__UIVersionString": "1.0",
+		"GUID": "632444ec-b341-4a2d-a5ee-81fccfa3d8e3"
+	  }
+	]
+}

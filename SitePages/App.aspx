@@ -90,7 +90,7 @@
   
   <script>
     $(function() {
-		app.init(),
+		app.init();
     });
   </script>
 

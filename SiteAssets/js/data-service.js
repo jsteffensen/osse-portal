@@ -1,6 +1,7 @@
 const data = {};
 
-data.apiEndpoint = 'https://collab.napma.nato.int/aircm/osse/_api/';
+//data.apiEndpoint = 'https://collab.napma.nato.int/aircm/osse/_api/';
+data.apiEndpoint = 'http://localhost:4000/_api/';
 
 data.getJson = function(urlstring) {
   return new Promise(function(resolve, reject) {    
@@ -71,7 +72,7 @@ data.postJsonWithDigest = function(urlstring, postData, digest) {
 
 data.getList = function(listName, orderBy) {
   return new Promise(function(resolve, reject) {
-    let urlstring = data.apiEndpoint + 'Web/Lists/' + listName + '/items';
+    let urlstring = data.apiEndpoint + 'web/lists/' + listName + '/items';
     
     if(orderBy) {
       urlstring = urlstring + '?orderby=' + orderBy;
@@ -89,9 +90,21 @@ data.getList = function(listName, orderBy) {
   });
 };
 
-data.getUsers = function() {
+data.getSiteUsers = function() {
   return new Promise(function(resolve, reject) {
-    const urlstring = data.apiEndpoint + 'Web/Siteusers/';
+    const urlstring = data.apiEndpoint + 'Web/Siteusers';
+    
+    data.getJson(urlstring).then((responseData) => {
+      resolve(responseData);
+    }, (error) => {
+      reject(error);
+    });
+  });
+};
+
+data.getCurrentUser = function() {
+  return new Promise(function(resolve, reject) {
+    const urlstring = data.apiEndpoint + 'Web/currentuser';
     
     data.getJson(urlstring).then((responseData) => {
       resolve(responseData);
