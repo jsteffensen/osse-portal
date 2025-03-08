@@ -28,12 +28,13 @@ app.dashboard.populateParentCollection = function() {
   // Clear loading indicators
   collection.find('.loading-indicator').remove();
   
-  // Check if cache is available
-  if (window.cache && window.cache.data && window.cache.data.parents) {
-    const parents = window.cache.data.parents;
-    
+  // Check if data is available
+  const hasData = app.data && app.data.parents && app.data.requirements;
+  
+  // Check if parents data is available
+  if (hasData) {
     // If no items exist, show empty message
-    if (parents.length === 0) {
+    if (app.data.parents.length === 0) {
       collection.append(`
         <li class="collection-item">
           <span class="title">No parent items found</span>
@@ -44,7 +45,7 @@ app.dashboard.populateParentCollection = function() {
     }
     
     // Add each parent item to the collection
-    parents.forEach(function(parent) {
+    app.data.parents.forEach(function(parent) {
       collection.append(`
         <li class="collection-item avatar">
           <i class="material-icons circle blue">folder</i>
@@ -57,12 +58,12 @@ app.dashboard.populateParentCollection = function() {
       `);
     });
   } else {
-    // Cache not available, show error message
+    // Data not available, show error message
     collection.append(`
       <li class="collection-item avatar">
         <i class="material-icons circle red">error</i>
-        <span class="title">Cache not available</span>
-        <p>The data cache is not yet available.<br>
+        <span class="title">Data not available</span>
+        <p>The parent data is not available.<br>
            Please try refreshing the page.
         </p>
       </li>

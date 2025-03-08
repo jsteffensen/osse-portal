@@ -29,7 +29,8 @@ app.ui.showAlert = function() {
 
 
 app.init = function() {
-	app.initData().then(()=>{
+	app.initData().then((data)=>{
+		app.data = data;
 		return app.initUI();
 	}, (err)=>{
 		return Promise.reject({data: err});
@@ -206,4 +207,3 @@ app.initGeneric = function() {
 	// Generic initialization for templates without specific init functions
 	M.AutoInit();
 }
-
