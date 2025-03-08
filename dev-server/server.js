@@ -24,6 +24,11 @@ app.use(express.static(path.join(__dirname, '/'), {
   }
 }));
 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
+
 // Serve static files from the SiteAssets directory
 app.use('/SiteAssets', express.static(path.join(__dirname, '../SiteAssets'), {
   setHeaders: (res, filePath) => {
@@ -80,44 +85,8 @@ function serveJsonFile(filePath, res) {
   });
 }
 
-/*// OsseParentList
-app.get("/_api/web/lists/GetByTitle('OsseParentList')/items", (req, res) => {
-  const filePath = path.join(__dirname, 'data', 'OsseParentList.json');
-  serveJsonFile(filePath, res);
-});
-
-// OsseRequirementList
-app.get("/_api/web/lists/GetByTitle('OsseRequirementList')/items", (req, res) => {
-  const filePath = path.join(__dirname, 'data', 'OsseRequirementList.json');
-  serveJsonFile(filePath, res);
-});
-
-// OsseMailTriggersList
-app.get("/_api/web/lists/GetByTitle('OsseMailTriggersList')/items", (req, res) => {
-  const filePath = path.join(__dirname, 'data', 'OsseMailTriggersList.json');
-  serveJsonFile(filePath, res);
-});*/
-
-/*app.get("/_api/web/lists/GetByTitle(:title)/items", (req, res) => {
-
-  const listTitle = req.params.title.replace(/^'|'$/g, '');
-  const filePath = path.join(__dirname, 'data', `${listTitle}.json`);
-  
-  // Check if the file exists
-  fs.access(filePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      console.error(`File for list "${listTitle}" not found at ${filePath}`);
-      return res.status(404).json({
-        success: false,
-        message: `List "${listTitle}" not found or no data available`
-      });
-    }
-    
-    serveJsonFile(filePath, res);
-  });
-});*/
-
 app.get('/_api/web/lists/GetByTitle*', (req, res) => {
+	
   // Get the full URL
   const url = req.url;
   
